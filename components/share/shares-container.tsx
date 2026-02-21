@@ -9,6 +9,7 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { ArrowLeft } from "lucide-react"
+import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { CreateTokenForm } from "@/components/share/create-token-form"
@@ -58,6 +59,9 @@ export function SharesContainer({
     // 생성된 토큰을 스토어에 추가
     if (token) {
       addToken(token)
+      toast.success("공유 링크가 생성되었습니다", {
+        description: `${email}님에게 발송될 준비가 완료되었습니다.`,
+      })
     }
   }
 
@@ -69,6 +73,13 @@ export function SharesContainer({
     if (result.success) {
       // 성공 시 스토어에서도 업데이트
       revokeToken(tokenId)
+      toast.success("공유 링크가 비활성화되었습니다", {
+        description: "클라이언트는 더 이상 이 링크를 사용할 수 없습니다.",
+      })
+    } else {
+      toast.error("공유 링크 비활성화 실패", {
+        description: result.error || "잠시 후 다시 시도해주세요.",
+      })
     }
   }
 

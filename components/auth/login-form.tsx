@@ -7,10 +7,12 @@
  */
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Eye, EyeOff, FileText, Loader2 } from "lucide-react"
+import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -26,6 +28,7 @@ const loginSchema = z.object({
 type LoginFormValues = z.infer<typeof loginSchema>
 
 export function LoginForm() {
+  const router = useRouter()
   // 비밀번호 가시성 상태
   const [showPassword, setShowPassword] = useState(false)
   // 서버 액션 에러 메시지 상태
@@ -61,10 +64,22 @@ export function LoginForm() {
       // 서버 액션에서 오류 반환 시 처리
       if (result && !result.success) {
         const generalError = (result.errors as Record<string, string>)?.general
-        setServerError(generalError ?? "로그인에 실패했습니다. 다시 시도해주세요.")
+        const errorMessage = generalError ?? "로그인에 실패했습니다. 다시 시도해주세요."
+        setServerError(errorMessage)
+        toast.error("로그인 실패", {
+          description: errorMessage,
+        })
+      } else {
+        // 로그인 성공
+        toast.success("로그인 성공", {
+          description: "대시보드로 이동합니다.",
+        })
       }
     } catch {
       // 예기치 못한 오류 처리 (redirect는 throw 되므로 정상 동작)
+      toast.error("로그인 오류", {
+        description: "예기치 않은 오류가 발생했습니다.",
+      })
     } finally {
       setIsLoading(false)
     }

@@ -7,6 +7,7 @@
  */
 
 import { Copy, Check, ExternalLink } from "lucide-react"
+import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard"
@@ -20,6 +21,14 @@ interface ShareLinkDisplayProps {
 
 export function ShareLinkDisplay({ shareUrl, recipientEmail }: ShareLinkDisplayProps) {
   const { copied, copyToClipboard } = useCopyToClipboard()
+
+  // 링크 복사 핸들러
+  const handleCopy = async () => {
+    await copyToClipboard(shareUrl)
+    toast.success("링크가 클립보드에 복사되었습니다", {
+      description: "클라이언트와 공유할 준비가 완료되었습니다.",
+    })
+  }
 
   return (
     <Card className="border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950/30">
@@ -53,7 +62,7 @@ export function ShareLinkDisplay({ shareUrl, recipientEmail }: ShareLinkDisplayP
           <Button
             variant="outline"
             size="sm"
-            onClick={() => copyToClipboard(shareUrl)}
+            onClick={handleCopy}
             className="flex-shrink-0"
             aria-label={copied ? "복사됨" : "링크 복사"}
           >

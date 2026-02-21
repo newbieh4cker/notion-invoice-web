@@ -107,86 +107,95 @@
 
 ---
 
-### Phase 2: 공통 컴포넌트 및 UI 완성 (더미 데이터 활용)
+### Phase 2: 공통 컴포넌트 및 UI 완성 (더미 데이터 활용) -- 완료
 
-- **Task 006: 추가 shadcn/ui 컴포넌트 설치 및 공통 컴포넌트 구현** - 우선순위
-  - `npx shadcn@latest add` 명령으로 필요 컴포넌트 추가 설치: table, dialog, select, separator, skeleton, toast, tooltip, avatar, tabs, sheet, alert-dialog, sonner, form, textarea, popover, calendar
-  - 공통 로딩 컴포넌트 구현 (`components/common/loading-spinner.tsx`)
-  - 공통 빈 상태 컴포넌트 구현 (`components/common/empty-state.tsx`)
-  - 공통 에러 상태 컴포넌트 구현 (`components/common/error-state.tsx`)
-  - 상태 Badge 컴포넌트 구현 (`components/invoice/status-badge.tsx`) - InvoiceStatus에 따른 색상/레이블 매핑 (draft: 회색, sent: 파란색, viewed: 노란색, paid: 초록색)
+- **Task 006: 추가 shadcn/ui 컴포넌트 설치 및 공통 컴포넌트 구현** -- 완료
+  - See: `/tasks/006-shadcn-common-components.md`
+  - ✅ `npx shadcn@latest add` 명령으로 18개 shadcn/ui 컴포넌트 추가 설치: table, dialog, select, separator, skeleton, toast, tooltip, avatar, tabs, sheet, alert-dialog, sonner, form, textarea, popover, calendar
+  - ✅ 공통 로딩 컴포넌트 구현 (`components/common/loading-spinner.tsx`)
+  - ✅ 공통 빈 상태 컴포넌트 구현 (`components/common/empty-state.tsx`)
+  - ✅ 공통 에러 상태 컴포넌트 구현 (`components/common/error-state.tsx`)
+  - ✅ 상태 Badge 컴포넌트 구현 (`components/invoice/status-badge.tsx`) - InvoiceStatus에 따른 색상/레이블 매핑 (draft: 회색, sent: 파란색, viewed: 노란색, paid: 초록색)
 
-- **Task 007: 더미 데이터 생성 및 Zustand 스토어 구현**
-  - `lib/dummy-data.ts` - 견적서 더미 데이터 5-10건 생성 (모든 상태 포함: draft, sent, viewed, paid / 항목 2-5개씩 포함)
-  - `lib/dummy-tokens.ts` - 공유 토큰 더미 데이터 생성 (활성/만료/무효화 상태 포함)
-  - `stores/invoice-store.ts` - 견적서 목록 필터(status)/검색(clientName)/정렬(issueDate, totalAmount) 상태 관리 (Zustand)
-  - `stores/token-store.ts` - 토큰 생성 모달 열림/닫힘, 선택된 토큰 등 UI 상태 관리 (Zustand)
+- **Task 007: 더미 데이터 생성 및 Zustand 스토어 구현** -- 완료
+  - See: `/tasks/007-dummy-data-zustand-stores.md`
+  - ✅ `lib/dummy-data.ts` - 견적서 더미 데이터 9건 생성 (모든 상태 포함: draft, sent, viewed, paid / 항목 2-5개씩 포함)
+  - ✅ `lib/dummy-tokens.ts` - 공유 토큰 더미 데이터 8건 생성 (활성/만료/무효화 상태 포함)
+  - ✅ `stores/invoice-store.ts` - 견적서 목록 필터(status)/검색(clientName)/정렬(issueDate, totalAmount) 상태 관리 (Zustand)
+  - ✅ `stores/token-store.ts` - 토큰 생성 모달 열림/닫힘, 선택된 토큰 등 UI 상태 관리 (Zustand)
 
-- **Task 008: 로그인 페이지 UI 구현 (F010)**
-  - `components/auth/login-form.tsx` - React Hook Form + Zod 기반 로그인 폼 (`"use client"`)
-  - 이메일 입력 필드 (shadcn/ui Input + Label, type="email")
-  - 비밀번호 입력 필드 (shadcn/ui Input + Label, type="password")
-  - Zod 스키마 기반 폼 유효성 검사 실시간 에러 표시
-  - 로그인 버튼 (useFormStatus 기반 로딩 스피너 표시)
-  - 서버 액션(loginAction) 에러 메시지 표시 (잘못된 계정 정보)
-  - `app/login/page.tsx` 업데이트 - LoginForm 컴포넌트 통합
-  - 반응형 레이아웃 (중앙 정렬, max-w-sm)
+- **Task 008: 로그인 페이지 UI 구현 (F010)** -- 완료
+  - See: `/tasks/008-login-page-ui.md`
+  - ✅ `components/auth/login-form.tsx` - React Hook Form + Zod 기반 로그인 폼 (`"use client"`)
+  - ✅ 이메일 입력 필드 (shadcn/ui Input + Label, type="email")
+  - ✅ 비밀번호 입력 필드 (shadcn/ui Input + Label, type="password")
+  - ✅ Zod 스키마 기반 폼 유효성 검사 실시간 에러 표시
+  - ✅ 로그인 버튼 (useFormStatus 기반 로딩 스피너 표시)
+  - ✅ 서버 액션(loginAction) 에러 메시지 표시 (잘못된 계정 정보)
+  - ✅ `app/login/page.tsx` 업데이트 - LoginForm 컴포넌트 통합
+  - ✅ 반응형 레이아웃 (중앙 정렬, max-w-sm)
 
-- **Task 009: 대시보드 페이지 UI 구현 (F001)**
-  - `components/dashboard/stats-cards.tsx` - 전체/상태별 견적서 수 카드 4개 (전체, 발송, 열람, 지불 / shadcn/ui Card + Lucide 아이콘)
-  - `components/dashboard/recent-invoices-table.tsx` - 최근 견적서 5건 테이블 (번호, 클라이언트명, 금액, 상태, 발행일 / shadcn/ui Table)
-  - 테이블 행 클릭 시 `/invoices/[id]` 견적서 상세 페이지로 이동 링크
-  - 더미 데이터를 활용한 완전한 UI 렌더링
-  - `app/(admin)/dashboard/page.tsx` 업데이트 - StatsCards, RecentInvoicesTable 컴포넌트 통합
+- **Task 009: 대시보드 페이지 UI 구현 (F001)** -- 완료
+  - See: `/tasks/009-dashboard-page-ui.md`
+  - ✅ `components/dashboard/stats-cards.tsx` - 전체/상태별 견적서 수 카드 4개 (전체, 발송, 열람, 지불 / shadcn/ui Card + Lucide 아이콘)
+  - ✅ `components/dashboard/recent-invoices-table.tsx` - 최근 견적서 5건 테이블 (번호, 클라이언트명, 금액, 상태, 발행일 / shadcn/ui Table)
+  - ✅ 테이블 행 클릭 시 `/invoices/[id]` 견적서 상세 페이지로 이동 링크
+  - ✅ 더미 데이터를 활용한 완전한 UI 렌더링
+  - ✅ `app/(admin)/dashboard/page.tsx` 업데이트 - StatsCards, RecentInvoicesTable 컴포넌트 통합
 
-- **Task 010: 견적서 목록 페이지 UI 구현 (F001)**
-  - `components/invoice/invoice-filters.tsx` - 상태별 필터링 탭 (전체/초안/발송/열람/지불 / shadcn/ui Tabs 활용)
-  - `components/invoice/invoice-search.tsx` - 클라이언트명 검색 입력 필드 (shadcn/ui Input + Search 아이콘)
-  - `components/invoice/invoice-table.tsx` - 견적서 목록 테이블 (번호, 클라이언트명, 발행일, 금액, 상태, 상세보기 액션 / shadcn/ui Table)
-  - `components/invoice/invoice-sort.tsx` - 정렬 기능 드롭다운 (발행일순, 금액순 / shadcn/ui Select)
-  - Zustand 스토어(invoice-store)와 연동하여 필터/검색/정렬 상태 관리
-  - 더미 데이터 기반 완전한 목록 UI 렌더링
-  - 반응형 디자인 (모바일: 카드 형태, 데스크탑: 테이블 형태)
-  - `app/(admin)/invoices/page.tsx` 업데이트 - 컴포넌트 통합
+- **Task 010: 견적서 목록 페이지 UI 구현 (F001)** -- 완료
+  - See: `/tasks/010-invoice-list-page-ui.md`
+  - ✅ `components/invoice/invoice-filters.tsx` - 상태별 필터링 탭 (전체/초안/발송/열람/지불 / shadcn/ui Tabs 활용)
+  - ✅ `components/invoice/invoice-search.tsx` - 클라이언트명 검색 입력 필드 (shadcn/ui Input + Search 아이콘)
+  - ✅ `components/invoice/invoice-table.tsx` - 견적서 목록 테이블 (번호, 클라이언트명, 발행일, 금액, 상태, 상세보기 액션 / shadcn/ui Table)
+  - ✅ `components/invoice/invoice-sort.tsx` - 정렬 기능 드롭다운 (발행일순, 금액순 / shadcn/ui Select)
+  - ✅ Zustand 스토어(invoice-store)와 연동하여 필터/검색/정렬 상태 관리
+  - ✅ 더미 데이터 기반 완전한 목록 UI 렌더링
+  - ✅ 반응형 디자인 (모바일: 카드 형태, 데스크탑: 테이블 형태)
+  - ✅ `app/(admin)/invoices/page.tsx` 업데이트 - 컴포넌트 통합
 
-- **Task 011: 견적서 상세 페이지 UI 구현 (F001, F002, F004)**
-  - `components/invoice/invoice-header.tsx` - 견적서 헤더 정보 (번호, 발행일, 유효기간, 상태 Badge)
-  - `components/invoice/client-info.tsx` - 클라이언트 정보 카드 (이름, 이메일, 전화 / shadcn/ui Card)
-  - `components/invoice/invoice-items-table.tsx` - 항목 테이블 (상품/서비스명, 수량, 단가, 소계 / shadcn/ui Table)
-  - `components/invoice/invoice-summary.tsx` - 합계 섹션 (소계, 세금(10%), 총액 / formatCurrency 활용)
-  - `components/invoice/invoice-actions.tsx` - 액션 버튼 바 (공유 링크 생성 버튼, PDF 다운로드 버튼, 뒤로 가기 버튼)
-  - 더미 데이터 기반 완전한 상세 UI 렌더링
-  - `app/(admin)/invoices/[id]/page.tsx` 업데이트 - 컴포넌트 통합
+- **Task 011: 견적서 상세 페이지 UI 구현 (F001, F002, F004)** -- 완료
+  - See: `/tasks/011-invoice-detail-page-ui.md`
+  - ✅ `components/invoice/invoice-header.tsx` - 견적서 헤더 정보 (번호, 발행일, 유효기간, 상태 Badge)
+  - ✅ `components/invoice/client-info.tsx` - 클라이언트 정보 카드 (이름, 이메일, 전화 / shadcn/ui Card)
+  - ✅ `components/invoice/invoice-items-table.tsx` - 항목 테이블 (상품/서비스명, 수량, 단가, 소계 / shadcn/ui Table)
+  - ✅ `components/invoice/invoice-summary.tsx` - 합계 섹션 (소계, 세금(10%), 총액 / formatCurrency 활용)
+  - ✅ `components/invoice/invoice-actions.tsx` - 액션 버튼 바 (공유 링크 생성 버튼, PDF 다운로드 버튼, 뒤로 가기 버튼)
+  - ✅ 더미 데이터 기반 완전한 상세 UI 렌더링
+  - ✅ `app/(admin)/invoices/[id]/page.tsx` 업데이트 - 컴포넌트 통합
 
-- **Task 012: 공유 링크 관리 페이지 UI 구현 (F002, F011)**
-  - `components/share/create-token-form.tsx` - 토큰 생성 폼 (클라이언트 이메일, 유효기간 설정 드롭다운(7일/14일/30일/60일/90일) - React Hook Form + Zod)
-  - `components/share/token-list.tsx` - 토큰 목록 테이블 (이메일, 토큰(마스킹), 생성일, 만료일, 마지막접근일, 상태(활성/만료/무효화))
-  - `components/share/token-actions.tsx` - 토큰별 액션 버튼 (링크 복사(use-copy-to-clipboard 훅), 무효화 버튼)
-  - `components/share/share-link-display.tsx` - 생성된 공유 링크 URL 전체 표시 및 원클릭 복사
-  - 토큰 무효화 확인 다이얼로그 (shadcn/ui AlertDialog)
-  - 더미 토큰 데이터 기반 완전한 관리 UI 렌더링
-  - `app/(admin)/invoices/[id]/shares/page.tsx` 업데이트 - 컴포넌트 통합
+- **Task 012: 공유 링크 관리 페이지 UI 구현 (F002, F011)** -- 완료
+  - See: `/tasks/012-share-link-management-ui.md`
+  - ✅ `components/share/create-token-form.tsx` - 토큰 생성 폼 (클라이언트 이메일, 유효기간 설정 드롭다운(7일/14일/30일/60일/90일) - React Hook Form + Zod)
+  - ✅ `components/share/token-list.tsx` - 토큰 목록 테이블 (이메일, 토큰(마스킹), 생성일, 만료일, 마지막접근일, 상태(활성/만료/무효화))
+  - ✅ `components/share/token-actions.tsx` - 토큰별 액션 버튼 (링크 복사(use-copy-to-clipboard 훅), 무효화 버튼)
+  - ✅ `components/share/share-link-display.tsx` - 생성된 공유 링크 URL 전체 표시 및 원클릭 복사
+  - ✅ 토큰 무효화 확인 다이얼로그 (shadcn/ui AlertDialog)
+  - ✅ 더미 토큰 데이터 기반 완전한 관리 UI 렌더링
+  - ✅ `app/(admin)/invoices/[id]/shares/page.tsx` 업데이트 - 컴포넌트 통합
 
-- **Task 013: 클라이언트 견적서 열람 페이지 UI 구현 (F003, F004, F011)**
-  - `components/invoice/invoice-view.tsx` - 클라이언트용 견적서 전체 뷰 (회사 정보, 클라이언트 정보, 항목 테이블, 합계 섹션 / 관리자 상세와 유사하되 읽기 전용)
-  - `components/invoice/pdf-download-button.tsx` - PDF 다운로드 버튼 (`"use client"`, use-pdf-download 훅 연동, 로딩 상태 표시)
-  - 인쇄 친화적 레이아웃 (`@media print` CSS 미디어 쿼리 - 불필요 요소 숨김)
-  - 테마 토글 지원 (ThemeToggle 컴포넌트 헤더 영역에 배치)
-  - 더미 데이터 기반 완전한 열람 UI 렌더링
-  - 오류 페이지 UI 확인 (만료/무효/미존재 토큰 케이스별 메시지)
-  - `app/invoice/[token]/page.tsx` 업데이트 - 컴포넌트 통합
+- **Task 013: 클라이언트 견적서 열람 페이지 UI 구현 (F003, F004, F011)** -- 완료
+  - See: `/tasks/013-client-invoice-view-ui.md`
+  - ✅ `components/invoice/invoice-view.tsx` - 클라이언트용 견적서 전체 뷰 (회사 정보, 클라이언트 정보, 항목 테이블, 합계 섹션 / 관리자 상세와 유사하되 읽기 전용)
+  - ✅ `components/invoice/pdf-download-button.tsx` - PDF 다운로드 버튼 (`"use client"`, use-pdf-download 훅 연동, 로딩 상태 표시)
+  - ✅ 인쇄 친화적 레이아웃 (`@media print` CSS 미디어 쿼리 - 불필요 요소 숨김)
+  - ✅ 테마 토글 지원 (ThemeToggle 컴포넌트 헤더 영역에 배치)
+  - ✅ 더미 데이터 기반 완전한 열람 UI 렌더링
+  - ✅ 오류 페이지 UI 확인 (만료/무효/미존재 토큰 케이스별 메시지)
+  - ✅ `app/invoice/[token]/page.tsx` 업데이트 - 컴포넌트 통합
 
-- **Task 014: Navbar 개선 및 전체 네비게이션 완성**
-  - `components/layout/navbar.tsx` 업데이트 - 로그아웃 버튼 추가 (logoutAction 서버 액션 연동)
-  - 현재 페이지 활성 메뉴 하이라이트 (`usePathname` 훅 활용, 활성 링크에 `text-foreground` 적용)
-  - 모바일 반응형 메뉴 구현 (shadcn/ui Sheet 컴포넌트 기반 햄버거 메뉴 / Lucide Menu 아이콘)
-  - 전체 페이지 간 네비게이션 플로우 검증 (대시보드 <-> 견적서 목록 <-> 견적서 상세 <-> 공유 링크 관리)
+- **Task 014: Navbar 개선 및 전체 네비게이션 완성** -- 완료
+  - See: `/tasks/014-navbar-navigation.md`
+  - ✅ `components/layout/navbar.tsx` 업데이트 - 로그아웃 버튼 추가 (logoutAction 서버 액션 연동)
+  - ✅ 현재 페이지 활성 메뉴 하이라이트 (`usePathname` 훅 활용, 활성 링크에 `text-foreground` 적용)
+  - ✅ 모바일 반응형 메뉴 구현 (shadcn/ui Sheet 컴포넌트 기반 햄버거 메뉴 / Lucide Menu 아이콘)
+  - ✅ 전체 페이지 간 네비게이션 플로우 검증 (대시보드 <-> 견적서 목록 <-> 견적서 상세 <-> 공유 링크 관리)
 
 ---
 
 ### Phase 3: 핵심 기능 구현 (노션 API 연동)
 
-- **Task 015: 노션 API 데이터 조회 함수 구현 (F001)** - 우선순위
+- **Task 015: 노션 API 데이터 조회 함수 구현 (F001)** -- 우선순위
   - `lib/notion.ts` 확장 - 견적서 목록 조회 함수 (`getInvoices`): 노션 DB 쿼리, 상태/정렬 필터 지원
   - 견적서 상세 조회 함수 (`getInvoiceById`): 노션 Page ID로 조회, 항목 데이터 포함
   - 견적서 항목 조회 함수 (`getInvoiceItems`): Relation 필드 기반 연관 항목 조회

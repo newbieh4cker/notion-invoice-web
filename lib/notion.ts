@@ -236,7 +236,7 @@ function pageToInvoice(page: PageObjectResponse, items: InvoiceItem[] = []): Inv
 
   return {
     id: page.id,
-    invoiceNumber: getStringProperty(props, "견적서번호") || getStringProperty(props, "InvoiceNumber"),
+    invoiceNumber: getStringProperty(props, "견적서번호") || getStringProperty(props, "InvoiceNumber") || getStringProperty(props, "InvoiceNum"),
     clientName: getStringProperty(props, "거래처명") || getStringProperty(props, "ClientName"),
     clientEmail: getStringProperty(props, "이메일") || getStringProperty(props, "ClientEmail"),
     clientPhone: getStringProperty(props, "전화번호") || getStringProperty(props, "ClientPhone"),

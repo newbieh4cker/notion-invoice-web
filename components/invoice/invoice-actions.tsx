@@ -6,21 +6,25 @@
  */
 
 import { useRouter } from "next/navigation"
-import { Share2, Download, ArrowLeft } from "lucide-react"
+import { Share2, ArrowLeft, Download } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import type { Invoice } from "@/types/invoice"
+import type { ReactNode } from "react"
 
 interface InvoiceActionsProps {
   /** 견적서 데이터 */
   invoice: Invoice
-  /** PDF 다운로드 핸들러 */
+  /** PDF 다운로드 버튼 컴포넌트 */
+  pdfDownloadButton?: ReactNode
+  /** (deprecated) PDF 다운로드 핸들러 - 하위 호환성 유지 */
   onDownloadPdf?: () => void
-  /** PDF 생성 중 여부 */
+  /** (deprecated) PDF 생성 중 여부 - 하위 호환성 유지 */
   isGeneratingPdf?: boolean
 }
 
 export function InvoiceActions({
   invoice,
+  pdfDownloadButton,
   onDownloadPdf,
   isGeneratingPdf = false,
 }: InvoiceActionsProps) {
@@ -51,25 +55,28 @@ export function InvoiceActions({
         </Button>
 
         {/* PDF 다운로드 버튼 */}
-        <Button
-          onClick={onDownloadPdf ?? (() => {})}
-          disabled={isGeneratingPdf}
-          className="w-full sm:w-auto"
-          aria-busy={isGeneratingPdf}
-        >
-          {isGeneratingPdf ? (
-            <>
-              {/* TODO: PDF 생성 중 로딩 처리 */}
-              <Download className="mr-2 h-4 w-4 animate-bounce" aria-hidden="true" />
-              PDF 생성 중...
-            </>
-          ) : (
-            <>
-              <Download className="mr-2 h-4 w-4" aria-hidden="true" />
-              PDF 다운로드
-            </>
-          )}
-        </Button>
+        {pdfDownloadButton ? (
+          pdfDownloadButton
+        ) : (
+          <Button
+            onClick={onDownloadPdf ?? (() => {})}
+            disabled={isGeneratingPdf}
+            className="w-full sm:w-auto"
+            aria-busy={isGeneratingPdf}
+          >
+            {isGeneratingPdf ? (
+              <>
+                <Download className="mr-2 h-4 w-4 animate-bounce" aria-hidden="true" />
+                PDF 생성 중...
+              </>
+            ) : (
+              <>
+                <Download className="mr-2 h-4 w-4" aria-hidden="true" />
+                PDF 다운로드
+              </>
+            )}
+          </Button>
+        )}
       </div>
     </div>
   )

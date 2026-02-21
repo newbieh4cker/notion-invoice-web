@@ -2,7 +2,7 @@
 
 /**
  * 견적서 상세 페이지 클라이언트 컨테이너
- * PDF 다운로드 훅 연동 및 전체 레이아웃 관리
+ * PDF 다운로드 및 전체 레이아웃 관리
  */
 
 import { InvoiceHeader } from "@/components/invoice/invoice-header"
@@ -10,8 +10,8 @@ import { ClientInfo } from "@/components/invoice/client-info"
 import { InvoiceItemsTable } from "@/components/invoice/invoice-items-table"
 import { InvoiceSummary } from "@/components/invoice/invoice-summary"
 import { InvoiceActions } from "@/components/invoice/invoice-actions"
+import { PdfDownloadButton } from "@/components/invoice/pdf-download-button"
 import { Separator } from "@/components/ui/separator"
-import { usePdfDownload } from "@/hooks/use-pdf-download"
 import type { Invoice } from "@/types/invoice"
 
 interface InvoiceDetailContainerProps {
@@ -23,15 +23,8 @@ interface InvoiceDetailContainerProps {
 const PDF_ELEMENT_ID = "invoice-print-area"
 
 export function InvoiceDetailContainer({ invoice }: InvoiceDetailContainerProps) {
-  // PDF 파일명 생성
+  // PDF 파일명 생성: 견적서_{번호}_{클라이언트명}.pdf
   const pdfFilename = `견적서_${invoice.invoiceNumber}_${invoice.clientName}.pdf`
-  const { isGenerating, downloadPdf } = usePdfDownload({ filename: pdfFilename })
-
-  // PDF 다운로드 핸들러
-  const handleDownloadPdf = async () => {
-    // TODO: 에러 처리 (toast 알림) 추가
-    await downloadPdf(PDF_ELEMENT_ID)
-  }
 
   return (
     <div className="space-y-6">
@@ -57,8 +50,13 @@ export function InvoiceDetailContainer({ invoice }: InvoiceDetailContainerProps)
       {/* 액션 버튼 바 */}
       <InvoiceActions
         invoice={invoice}
-        onDownloadPdf={handleDownloadPdf}
-        isGeneratingPdf={isGenerating}
+        pdfDownloadButton={
+          <PdfDownloadButton
+            targetElementId={PDF_ELEMENT_ID}
+            filename={pdfFilename}
+            size="default"
+          />
+        }
       />
     </div>
   )

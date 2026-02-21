@@ -3,10 +3,11 @@
 /**
  * PDF 다운로드 버튼 컴포넌트
  * use-pdf-download 훅 활용
- * 로딩 상태와 에러 처리 포함
+ * 로딩 상태, 에러 처리, 토스트 알림 포함
  */
 
 import { Download, Loader2 } from "lucide-react"
+import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { usePdfDownload } from "@/hooks/use-pdf-download"
 
@@ -36,9 +37,16 @@ export function PdfDownloadButton({
   const handleDownload = async () => {
     try {
       await downloadPdf(targetElementId)
-    } catch {
-      // TODO: 에러 시 toast 알림 표시
-      alert("PDF 생성 중 오류가 발생했습니다. 다시 시도해주세요.")
+      toast.success("PDF가 다운로드되었습니다", {
+        description: `파일명: ${filename}`,
+      })
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "PDF 생성에 실패했습니다"
+      console.error("PDF 다운로드 실패:", error)
+      toast.error("PDF 다운로드 실패", {
+        description: errorMessage || "다시 시도해주세요.",
+      })
     }
   }
 
@@ -50,6 +58,7 @@ export function PdfDownloadButton({
       size={size}
       className={className}
       aria-busy={isGenerating}
+      aria-label={isGenerating ? "PDF 생성 중" : "PDF 다운로드"}
     >
       {isGenerating ? (
         <>

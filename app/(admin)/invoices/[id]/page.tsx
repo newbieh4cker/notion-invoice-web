@@ -4,6 +4,12 @@ import { InvoiceDetailContainer } from "@/components/invoice/invoice-detail-cont
 import { ErrorState } from "@/components/common/error-state"
 import { getInvoiceById } from "@/lib/notion"
 
+/**
+ * 견적서 상세 페이지 캐시 설정
+ * 30초 캐시: 사용자가 자주 접근하는 페이지이므로 짧은 캐시 활용
+ */
+export const revalidate = 30
+
 interface InvoiceDetailPageProps {
   params: Promise<{ id: string }>
 }

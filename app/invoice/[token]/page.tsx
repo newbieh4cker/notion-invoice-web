@@ -2,14 +2,81 @@ import { Metadata } from "next"
 import { InvoiceView } from "@/components/invoice/invoice-view"
 import { ErrorState } from "@/components/common/error-state"
 import { validateAccessToken, getInvoiceById, updateInvoiceStatus } from "@/lib/notion"
+import { formatCurrency } from "@/lib/format"
+
+/**
+ * 클라이언트 견적서 열람 페이지 캐시 설정
+ * revalidate: 0 = 캐시 없음
+ * 이유: 토큰 검증, 마지막 접근일 업데이트, 상태 변경(sent→viewed) 등
+ * 동적 작업이 매 요청마다 실행되어야 함
+ */
+export const revalidate = 0
 
 interface ClientInvoicePageProps {
   params: Promise<{ token: string }>
 }
 
-export const metadata: Metadata = {
-  title: "견적서 열람",
-  description: "공유받은 견적서를 확인하세요",
+/**
+ * 동적 메타데이터 생성 (SEO 최적화)
+ * 견적서 번호, 클라이언트명, 금액을 OG 태그에 포함
+ */
+export async function generateMetadata({
+  params,
+}: ClientInvoicePageProps): Promise<Metadata> {
+  const { token } = await params
+
+  try {
+    // 토큰 유효성 검증
+    const validation = await validateAccessToken(token)
+
+    // 토큰이 유효하지 않으면 기본 메타데이터 반환
+    if (!validation.isValid || !validation.invoiceId) {
+      return {
+        title: "견적서 열람",
+        description: "공유받은 견적서를 확인하세요",
+        robots: { index: false, follow: false },
+      }
+    }
+
+    // 견적서 조회
+    const invoice = await getInvoiceById(validation.invoiceId)
+
+    if (!invoice) {
+      return {
+        title: "견적서 열람",
+        description: "공유받은 견적서를 확인하세요",
+        robots: { index: false, follow: false },
+      }
+    }
+
+    // 견적서 정보로 OG 메타데이터 생성
+    const title = `${invoice.invoiceNumber} | ${invoice.clientName} | ${formatCurrency(invoice.totalAmount)}`
+    const description = `${invoice.companyName}에서 발송한 견적서입니다. 견적번호: ${invoice.invoiceNumber}, 금액: ${formatCurrency(invoice.totalAmount)}`
+
+    return {
+      title,
+      description,
+      // 검색엔진 인덱싱 금지 (민감한 비즈니스 문서)
+      robots: { index: false, follow: false },
+      openGraph: {
+        title,
+        description,
+        type: "website",
+        locale: "ko_KR",
+      },
+      twitter: {
+        card: "summary",
+        title,
+        description,
+      },
+    }
+  } catch {
+    return {
+      title: "견적서 열람",
+      description: "공유받은 견적서를 확인하세요",
+      robots: { index: false, follow: false },
+    }
+  }
 }
 
 /**

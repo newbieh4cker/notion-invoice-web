@@ -4,9 +4,15 @@ import { RecentInvoicesTable } from "@/components/dashboard/recent-invoices-tabl
 import { ErrorState } from "@/components/common/error-state"
 import { getInvoices } from "@/lib/notion"
 
+/**
+ * 대시보드 페이지 캐시 설정
+ * 60초 캐시: 통계 데이터는 실시간성이 낮으므로 짧은 캐시 활용
+ */
+export const revalidate = 60
+
 export const metadata: Metadata = {
-  title: "대시보드 | 견적서 관리",
-  description: "견적서 현황 및 최근 목록",
+  title: "관리자 대시보드 - 노션 연동 온라인 견적서",
+  description: "견적서 현황 및 최근 목록을 한눈에 확인하세요",
 }
 
 /**
@@ -16,14 +22,8 @@ export const metadata: Metadata = {
  */
 export default async function DashboardPage() {
   try {
-    // 환경변수 확인 (디버그)
-    console.log("=== 환경변수 확인 ===")
-    console.log("NOTION_API_KEY:", process.env.NOTION_API_KEY ? "설정됨" : "미설정")
-    console.log("NOTION_INVOICES_DB_ID:", process.env.NOTION_INVOICES_DB_ID)
-    console.log("NOTION_INVOICE_ITEMS_DB_ID:", process.env.NOTION_INVOICE_ITEMS_DB_ID)
-    console.log("NOTION_ACCESS_TOKENS_DB_ID:", process.env.NOTION_ACCESS_TOKENS_DB_ID)
-
-    const invoices = await getInvoices()
+    // 대시보드는 전체 통계가 필요하므로 최대 100건 조회
+    const { invoices } = await getInvoices(undefined, 100)
 
     return (
       <div className="container mx-auto max-w-screen-2xl px-4 py-8">
@@ -48,7 +48,6 @@ export default async function DashboardPage() {
     // 상세 에러 로깅
     const errorMessage = error instanceof Error ? error.message : String(error)
     console.error("대시보드 데이터 로딩 실패:", errorMessage)
-    console.error("에러 전체:", error)
 
     return (
       <div className="container mx-auto max-w-screen-2xl px-4 py-8">

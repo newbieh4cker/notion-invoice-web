@@ -76,7 +76,8 @@ export async function getInvoiceListAction(
     const effectiveStatus =
       validatedStatus && validatedStatus !== "" ? validatedStatus : undefined
 
-    const invoices = await getInvoices(
+    // getInvoices는 페이지네이션 결과를 반환 - invoices 배열만 추출
+    const { invoices } = await getInvoices(
       effectiveStatus ? { status: effectiveStatus } : undefined
     )
 

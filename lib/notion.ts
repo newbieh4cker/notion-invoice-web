@@ -3,7 +3,7 @@ import type {
   PageObjectResponse,
   QueryDataSourceParameters,
 } from "@notionhq/client/build/src/api-endpoints"
-import type { Invoice, InvoiceItem, InvoiceStatus } from "@/types/invoice"
+import type { Invoice, InvoiceItem, InvoiceStatus, InvoiceListResult } from "@/types/invoice"
 import type { AccessToken } from "@/types/token"
 
 /**
@@ -197,7 +197,7 @@ function getRelationProperty(properties: NotionProperties, key: string): string[
 // ─── dataSources.query 래퍼 ────────────────────────────────────────
 
 /**
- * 노션 dataSources.query 호출 래퍼
+ * 노션 dataSources.query 호출 래퍼 (목록 조회)
  * SDK v5에서 databases.query가 dataSources.query로 변경됨
  */
 async function queryDataSource(
@@ -208,6 +208,26 @@ async function queryDataSource(
   return response.results.filter(
     (page): page is PageObjectResponse => "properties" in page
   )
+}
+
+/**
+ * 노션 dataSources.query 호출 래퍼 (페이지네이션 포함)
+ * next_cursor와 has_more 정보를 함께 반환
+ */
+async function queryDataSourcePaginated(
+  params: Omit<QueryDataSourceParameters, "data_source_id"> & { data_source_id: string }
+): Promise<{ pages: PageObjectResponse[]; nextCursor: string | null; hasMore: boolean }> {
+  const response = await notion.dataSources.query(params)
+
+  const pages = response.results.filter(
+    (page): page is PageObjectResponse => "properties" in page
+  )
+
+  return {
+    pages,
+    nextCursor: response.next_cursor ?? null,
+    hasMore: response.has_more ?? false,
+  }
 }
 
 // ─── 견적서 조회 ────────────────────────────────────────────────────
@@ -281,16 +301,32 @@ function pageToInvoiceItem(page: PageObjectResponse): InvoiceItem {
   }
 }
 
+/** 페이지당 기본 항목 수 */
+const DEFAULT_PAGE_SIZE = 20
+
 /**
- * 견적서 목록 조회
+ * 견적서 목록 조회 (페이지네이션 지원)
+ * 노션 API의 cursor 기반 페이지네이션을 활용
  * @param filters 상태 필터 (선택)
- * @returns 견적서 배열 (항목 제외)
+ * @param limit 페이지당 항목 수 (기본값: 20)
+ * @param startCursor 다음 페이지 시작 cursor (노션 cursor 기반)
+ * @returns 견적서 목록 및 페이지네이션 정보
  */
-export async function getInvoices(filters?: { status?: string }): Promise<Invoice[]> {
+export async function getInvoices(
+  filters?: { status?: string },
+  limit = DEFAULT_PAGE_SIZE,
+  startCursor?: string
+): Promise<InvoiceListResult> {
   return withRetry(async () => {
     const queryParams: Omit<QueryDataSourceParameters, "data_source_id"> & { data_source_id: string } = {
       data_source_id: NOTION_DB.INVOICES,
       sorts: [{ timestamp: "created_time", direction: "descending" }],
+      page_size: limit,
+    }
+
+    // cursor가 있으면 다음 페이지부터 조회
+    if (startCursor) {
+      queryParams.start_cursor = startCursor
     }
 
     // 상태 필터 적용
@@ -307,8 +343,13 @@ export async function getInvoices(filters?: { status?: string }): Promise<Invoic
       }
     }
 
-    const pages = await queryDataSource(queryParams)
-    return pages.map((page) => pageToInvoice(page))
+    const { pages, nextCursor, hasMore } = await queryDataSourcePaginated(queryParams)
+
+    return {
+      invoices: pages.map((page) => pageToInvoice(page)),
+      nextCursor,
+      hasMore,
+    }
   })
 }
 

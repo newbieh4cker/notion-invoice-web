@@ -1,0 +1,69 @@
+[    5343ms] [ERROR] PDF 생성 실패: Error: Attempting to parse an unsupported color function "lab"
+    at Object.parse (http://localhost:3000/_next/static/chunks/node_modules_html2canvas_dist_html2canvas_6fe6250c.js:2001:27)
+    at parseColor (http://localhost:3000/_next/static/chunks/node_modules_html2canvas_dist_html2canvas_6fe6250c.js:2118:24)
+    at parseBackgroundColor (http://localhost:3000/_next/static/chunks/node_modules_html2canvas_dist_html2canvas_6fe6250c.js:8577:56)
+    at http://localhost:3000/_next/static/chunks/node_modules_html2canvas_dist_html2canvas_6fe6250c.js:8516:43
+    at step (http://localhost:3000/_next/static/chunks/node_modules_html2canvas_dist_html2canvas_6fe6250c.js:160:27)
+    at Object.next (http://localhost:3000/_next/static/chunks/node_modules_html2canvas_dist_html2canvas_6fe6250c.js:101:24)
+    at fulfilled (http://localhost:3000/_next/static/chunks/node_modules_html2canvas_dist_html2canvas_6fe6250c.js:62:36) @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_b0daae9a._.js:2359
+[    5344ms] [ERROR] PDF 다운로드 실패: Error: Attempting to parse an unsupported color function "lab"
+    at Object.parse (http://localhost:3000/_next/static/chunks/node_modules_html2canvas_dist_html2canvas_6fe6250c.js:2001:27)
+    at parseColor (http://localhost:3000/_next/static/chunks/node_modules_html2canvas_dist_html2canvas_6fe6250c.js:2118:24)
+    at parseBackgroundColor (http://localhost:3000/_next/static/chunks/node_modules_html2canvas_dist_html2canvas_6fe6250c.js:8577:56)
+    at http://localhost:3000/_next/static/chunks/node_modules_html2canvas_dist_html2canvas_6fe6250c.js:8516:43
+    at step (http://localhost:3000/_next/static/chunks/node_modules_html2canvas_dist_html2canvas_6fe6250c.js:160:27)
+    at Object.next (http://localhost:3000/_next/static/chunks/node_modules_html2canvas_dist_html2canvas_6fe6250c.js:101:24)
+    at fulfilled (http://localhost:3000/_next/static/chunks/node_modules_html2canvas_dist_html2canvas_6fe6250c.js:62:36) @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_b0daae9a._.js:2359
+[    8246ms] [WARNING] The resource http://localhost:3000/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_57d40746._.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://localhost:3000/invoices/30ef4c03-1e3c-80ee-8b33-f35f003d9ccc:0
+[   24706ms] [ERROR] ./hooks/use-pdf-download.ts:144:6
+Parsing ecmascript source code failed
+  142 |         setIsGenerating(false)
+  143 |       }
+> 144 |     },
+      |      ^
+  145 |     [filename, margins, removeBackground]
+  146 |   )
+  147 |
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./hooks/use-pdf-download.ts [Client Component Browser]
+    ./components/invoice/pdf-download-button.tsx [Client Component Browser]
+    ./components/invoice/invoice-detail-container.tsx [Client Component Browser]
+    ./components/invoice/invoice-detail-container.tsx [Server Component]
+    ./app/(admin)/invoices/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./hooks/use-pdf-download.ts [Client Component SSR]
+    ./components/invoice/pdf-download-button.tsx [Client Component SSR]
+    ./components/invoice/invoice-detail-container.tsx [Client Component SSR]
+    ./components/invoice/invoice-detail-container.tsx [Server Component]
+    ./app/(admin)/invoices/[id]/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_b0daae9a._.js:2359
+[   31286ms] [ERROR] ./hooks/use-pdf-download.ts:144:6
+Parsing ecmascript source code failed
+  142 |         setIsGenerating(false)
+  143 |       }
+> 144 |     },
+      |      ^
+  145 |     [filename, margins, removeBackground]
+  146 |   )
+  147 |
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./hooks/use-pdf-download.ts [Client Component Browser]
+    ./components/invoice/pdf-download-button.tsx [Client Component Browser]
+    ./components/invoice/invoice-detail-container.tsx [Client Component Browser]
+    ./components/invoice/invoice-detail-container.tsx [Server Component]
+    ./app/(admin)/invoices/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./hooks/use-pdf-download.ts [Client Component SSR]
+    ./components/invoice/pdf-download-button.tsx [Client Component SSR]
+    ./components/invoice/invoice-detail-container.tsx [Client Component SSR]
+    ./components/invoice/invoice-detail-container.tsx [Server Component]
+    ./app/(admin)/invoices/[id]/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_b0daae9a._.js:2359

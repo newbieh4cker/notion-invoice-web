@@ -22,7 +22,7 @@ interface UsePdfDownloadReturn {
 
 /**
  * PDF 다운로드 커스텀 훅 (F004)
- * html2canvas + jspdf를 사용하여 DOM 요소를 PDF로 변환
+ * html2canvas-pro + jspdf를 사용하여 DOM 요소를 PDF로 변환
  * 한글 폰트 임베딩, A4 마진, 배경색 제거 지원
  */
 export function usePdfDownload({
@@ -43,16 +43,17 @@ export function usePdfDownload({
 
         // 동적 import로 클라이언트 번들 최적화
         const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
-          import("html2canvas"),
+          import("html2canvas-pro"),
           import("jspdf"),
         ])
 
-        // 배경색 제거 (다크모드 대응)
+        // 배경색 처리
         const originalBgColor = element.style.backgroundColor
         if (removeBackground) {
           element.style.backgroundColor = "white"
         }
 
+        // html2canvas-pro는 현대적 CSS 색상 함수를 지원함
         const canvas = await html2canvas(element, {
           scale: 2, // 고해상도 출력
           useCORS: true,
@@ -60,12 +61,15 @@ export function usePdfDownload({
           backgroundColor: removeBackground ? "#ffffff" : null,
         })
 
-        // 원래 스타일 복원
+        // 원래 배경색 복원
         if (removeBackground) {
           element.style.backgroundColor = originalBgColor
         }
 
+        // Canvas를 PNG로 변환
         const imgData = canvas.toDataURL("image/png")
+
+        // PDF 생성
         const pdf = new jsPDF({
           orientation: "portrait",
           unit: "mm",

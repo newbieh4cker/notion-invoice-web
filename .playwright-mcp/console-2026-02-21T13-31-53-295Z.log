@@ -1,0 +1,15 @@
+[    4586ms] [ERROR] PDF 생성 실패: TypeError: Cannot set property className of #<SVGElement> which has only a getter
+    at usePdfDownload.useCallback[downloadPdf] (http://localhost:3000/_next/static/chunks/_0da97f1f._.js:1306:46)
+    at NodeList.forEach (<anonymous>)
+    at usePdfDownload.useCallback[downloadPdf] (http://localhost:3000/_next/static/chunks/_0da97f1f._.js:1299:33)
+    at async handleDownload (http://localhost:3000/_next/static/chunks/_0da97f1f._.js:1421:13) @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_b0daae9a._.js:2359
+[    4587ms] [ERROR] PDF 다운로드 실패: TypeError: Cannot set property className of #<SVGElement> which has only a getter
+    at usePdfDownload.useCallback[downloadPdf] (http://localhost:3000/_next/static/chunks/_0da97f1f._.js:1306:46)
+    at NodeList.forEach (<anonymous>)
+    at usePdfDownload.useCallback[downloadPdf] (http://localhost:3000/_next/static/chunks/_0da97f1f._.js:1299:33)
+    at async handleDownload (http://localhost:3000/_next/static/chunks/_0da97f1f._.js:1421:13) @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_b0daae9a._.js:2359
+[    4587ms] [ERROR] PDF 다운로드 실패: TypeError: Cannot set property className of #<SVGElement> which has only a getter
+    at usePdfDownload.useCallback[downloadPdf] (http://localhost:3000/_next/static/chunks/_0da97f1f._.js:1306:46)
+    at NodeList.forEach (<anonymous>)
+    at usePdfDownload.useCallback[downloadPdf] (http://localhost:3000/_next/static/chunks/_0da97f1f._.js:1299:33)
+    at async handleDownload (http://localhost:3000/_next/static/chunks/_0da97f1f._.js:1421:13) @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_b0daae9a._.js:2359

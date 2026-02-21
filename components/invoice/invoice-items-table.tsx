@@ -43,7 +43,7 @@ export function InvoiceItemsTable({ items }: InvoiceItemsTableProps) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {items.map((item, index) => (
+              {items.map((item) => (
                 <TableRow key={item.id}>
                   <TableCell className="pl-6">
                     <div>

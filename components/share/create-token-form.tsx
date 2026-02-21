@@ -4,6 +4,7 @@
  * 공유 토큰 생성 폼 컴포넌트
  * 클라이언트 이메일과 유효기간을 입력받아 공유 링크 생성
  * React Hook Form + Zod 기반 유효성 검사
+ * 서버 액션을 통한 노션 DB 연동
  */
 
 import { useState } from "react"
@@ -22,6 +23,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { createTokenAction } from "@/actions/token"
+import type { AccessToken } from "@/types/token"
 
 /** 유효기간 옵션 */
 const EXPIRY_OPTIONS = [
@@ -47,11 +50,12 @@ interface CreateTokenFormProps {
   /** 견적서 ID (토큰 생성 시 연결) */
   invoiceId: string
   /** 토큰 생성 완료 콜백 (생성된 링크 URL 전달) */
-  onTokenCreated?: (shareUrl: string, email: string) => void
+  onTokenCreated?: (shareUrl: string, email: string, token?: AccessToken) => void
 }
 
 export function CreateTokenForm({ invoiceId, onTokenCreated }: CreateTokenFormProps) {
   const [isLoading, setIsLoading] = useState(false)
+  const [serverError, setServerError] = useState<string | null>(null)
 
   const {
     register,
@@ -74,16 +78,28 @@ export function CreateTokenForm({ invoiceId, onTokenCreated }: CreateTokenFormPr
   // 폼 제출 핸들러
   const onSubmit = async (data: CreateTokenFormValues) => {
     setIsLoading(true)
-    try {
-      // TODO: Phase 3에서 실제 토큰 생성 서버 액션 연동
-      // 임시 더미 토큰 생성 (개발 목적)
-      const dummyToken = Math.random().toString(36).substring(2) + Date.now().toString(36)
-      const shareUrl = `${window.location.origin}/invoice/${dummyToken}`
+    setServerError(null)
 
-      onTokenCreated?.(shareUrl, data.clientEmail)
+    try {
+      // 서버 액션으로 노션 DB에 토큰 생성
+      const result = await createTokenAction({
+        invoiceId,
+        clientEmail: data.clientEmail,
+        expiresInDays: parseInt(data.expiresInDays, 10),
+      })
+
+      if (!result.success) {
+        setServerError(result.error ?? "토큰 생성에 실패했습니다.")
+        return
+      }
+
+      if (result.data) {
+        onTokenCreated?.(result.data.shareUrl, data.clientEmail, result.data.token)
+      }
+
       reset()
     } catch {
-      // TODO: 에러 처리
+      setServerError("네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.")
     } finally {
       setIsLoading(false)
     }
@@ -106,6 +122,13 @@ export function CreateTokenForm({ invoiceId, onTokenCreated }: CreateTokenFormPr
           className="space-y-4"
           noValidate
         >
+          {/* 서버 에러 표시 */}
+          {serverError && (
+            <div className="rounded-md bg-destructive/10 px-4 py-3 text-sm text-destructive">
+              {serverError}
+            </div>
+          )}
+
           <div className="grid gap-4 sm:grid-cols-2">
             {/* 클라이언트 이메일 입력 */}
             <div className="space-y-2">

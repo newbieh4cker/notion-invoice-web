@@ -3,7 +3,7 @@
 /**
  * 공유 링크 관리 페이지 클라이언트 컨테이너
  * 토큰 생성 폼, 생성된 링크 표시, 토큰 목록을 통합 관리
- * Zustand 스토어 연동
+ * 서버 액션을 통한 노션 DB 연동
  */
 
 import { useEffect, useState } from "react"
@@ -15,6 +15,7 @@ import { CreateTokenForm } from "@/components/share/create-token-form"
 import { ShareLinkDisplay } from "@/components/share/share-link-display"
 import { TokenList } from "@/components/share/token-list"
 import { useTokenStore } from "@/stores/token-store"
+import { revokeTokenAction } from "@/actions/token"
 import type { AccessToken } from "@/types/token"
 
 interface SharesContainerProps {
@@ -50,18 +51,25 @@ export function SharesContainer({
   const baseUrl = typeof window !== "undefined" ? window.location.origin : ""
 
   // 토큰 생성 완료 콜백
-  const handleTokenCreated = (shareUrl: string, email: string) => {
+  const handleTokenCreated = (shareUrl: string, email: string, token?: AccessToken) => {
     setNewShareUrl(shareUrl)
     setNewShareEmail(email)
 
-    // TODO: Phase 3에서 실제 생성된 토큰을 스토어에 추가
-    // addToken(newToken)
+    // 생성된 토큰을 스토어에 추가
+    if (token) {
+      addToken(token)
+    }
   }
 
   // 토큰 무효화 핸들러
-  const handleRevoke = (tokenId: string) => {
-    // TODO: Phase 3에서 서버 액션 연동
-    revokeToken(tokenId)
+  const handleRevoke = async (tokenId: string) => {
+    // 서버 액션으로 노션 DB에서 토큰 무효화
+    const result = await revokeTokenAction(tokenId)
+
+    if (result.success) {
+      // 성공 시 스토어에서도 업데이트
+      revokeToken(tokenId)
+    }
   }
 
   return (

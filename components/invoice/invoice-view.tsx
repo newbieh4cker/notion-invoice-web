@@ -18,7 +18,6 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Separator } from "@/components/ui/separator"
-import { Badge } from "@/components/ui/badge"
 import { PdfDownloadButton } from "@/components/invoice/pdf-download-button"
 import { StatusBadge } from "@/components/invoice/status-badge"
 import { formatCurrency, formatDate } from "@/lib/format"

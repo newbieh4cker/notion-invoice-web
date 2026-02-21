@@ -1,8 +1,7 @@
 import { Metadata } from "next"
 import { InvoiceView } from "@/components/invoice/invoice-view"
 import { ErrorState } from "@/components/common/error-state"
-import { DUMMY_INVOICES } from "@/lib/dummy-data"
-import { findTokenByValue } from "@/lib/dummy-tokens"
+import { validateAccessToken, getInvoiceById } from "@/lib/notion"
 
 interface ClientInvoicePageProps {
   params: Promise<{ token: string }>
@@ -15,54 +14,43 @@ export const metadata: Metadata = {
 
 /**
  * 클라이언트 견적서 열람 페이지 (F003, F004, F011)
- * - 공유 토큰 유효성 검증 (더미 로직, Phase 3에서 실제 구현)
- * - 토큰이 유효하면 InvoiceView 렌더링
- * - 토큰이 유효하지 않으면 ErrorState 표시
+ * - 노션 API를 통한 토큰 유효성 검증
+ * - 유효한 토큰이면 견적서 데이터 조회 후 InvoiceView 렌더링
+ * - 유효하지 않은 토큰이면 ErrorState 표시
  */
 export default async function ClientInvoicePage({
   params,
 }: ClientInvoicePageProps) {
   const { token } = await params
 
-  // TODO: Phase 3에서 실제 토큰 검증 로직으로 교체 (lib/token.ts 활용)
-  const tokenData = findTokenByValue(token)
+  // 토큰 유효성 검증 (3단계: 존재 -> 폐기 -> 만료)
+  const validation = await validateAccessToken(token)
 
-  // 토큰이 없는 경우
-  if (!tokenData) {
+  // 토큰이 유효하지 않은 경우
+  if (!validation.isValid) {
+    const errorMessages: Record<string, { title: string; description: string }> = {
+      not_found: {
+        title: "유효하지 않은 링크",
+        description: "요청하신 견적서 링크가 올바르지 않습니다. 발송된 링크를 다시 확인해주세요.",
+      },
+      invalid: {
+        title: "비활성화된 링크",
+        description: "이 견적서 링크가 비활성화되었습니다. 발신자에게 문의해주세요.",
+      },
+      expired: {
+        title: "만료된 링크",
+        description: "이 견적서 링크의 유효기간이 만료되었습니다. 새 링크를 요청해주세요.",
+      },
+    }
+
+    const error = errorMessages[validation.reason ?? "not_found"]
+
     return (
       <div className="min-h-screen bg-background">
         <div className="container mx-auto max-w-4xl px-4 py-16">
           <ErrorState
-            title="유효하지 않은 링크"
-            description="요청하신 견적서 링크가 올바르지 않습니다. 발송된 링크를 다시 확인해주세요."
-          />
-        </div>
-      </div>
-    )
-  }
-
-  // 토큰이 만료된 경우
-  if (new Date(tokenData.expiresAt) < new Date()) {
-    return (
-      <div className="min-h-screen bg-background">
-        <div className="container mx-auto max-w-4xl px-4 py-16">
-          <ErrorState
-            title="만료된 링크"
-            description="이 견적서 링크의 유효기간이 만료되었습니다. 새 링크를 요청해주세요."
-          />
-        </div>
-      </div>
-    )
-  }
-
-  // 토큰이 폐기된 경우
-  if (tokenData.isRevoked) {
-    return (
-      <div className="min-h-screen bg-background">
-        <div className="container mx-auto max-w-4xl px-4 py-16">
-          <ErrorState
-            title="비활성화된 링크"
-            description="이 견적서 링크가 비활성화되었습니다. 발신자에게 문의해주세요."
+            title={error.title}
+            description={error.description}
           />
         </div>
       </div>
@@ -70,9 +58,8 @@ export default async function ClientInvoicePage({
   }
 
   // 견적서 조회
-  const invoice = DUMMY_INVOICES.find((inv) => inv.id === tokenData.invoiceId)
+  const invoice = await getInvoiceById(validation.invoiceId!)
 
-  // 견적서를 찾을 수 없는 경우
   if (!invoice) {
     return (
       <div className="min-h-screen bg-background">
@@ -86,8 +73,6 @@ export default async function ClientInvoicePage({
     )
   }
 
-  // TODO: Phase 3에서 마지막 접근일 업데이트 구현
-
   return (
     <div className="min-h-screen bg-background">
       {/* 인쇄 친화적 레이아웃 */}
@@ -95,7 +80,7 @@ export default async function ClientInvoicePage({
         {/* 클라이언트 안내 헤더 (인쇄 시 숨김) */}
         <div className="mb-6 rounded-md bg-muted px-4 py-3 text-sm text-muted-foreground print:hidden">
           <p>
-            이 견적서는 <strong className="text-foreground">{tokenData.clientEmail}</strong>
+            이 견적서는 <strong className="text-foreground">{validation.token?.clientEmail}</strong>
             님께 발송된 견적서입니다.
             PDF 다운로드 버튼을 이용해 저장할 수 있습니다.
           </p>

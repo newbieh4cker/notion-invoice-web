@@ -1,0 +1,25 @@
+[    4045ms] [WARNING] %c%s%c @notionhq/client warn: background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   request fail {code: validation_error, message: Could not find property with name or id: 견적서, requestId: 5d4f53f4-4b38-4f64-a776-5daeeb8aabf0} @ about://React/Server/file:///home/dev/claude-workspace/invoice-web/.next/server/chunks/ssr/%5Broot-of-the-server%5D__626b5182._.js?51:436
+[    4657ms] [WARNING] %c%s%c @notionhq/client warn: background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   request fail {code: validation_error, message: Could not find property with name or id: 견적서, requestId: 065eeb8d-fc4f-47a4-ae89-049a74a9ab09} @ about://React/Server/file:///home/dev/claude-workspace/invoice-web/.next/server/chunks/ssr/%5Broot-of-the-server%5D__626b5182._.js?51:436
+[    4658ms] [ERROR] %c%s%c 견적서 상세 로딩 실패: background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   APIResponseError: Could not find property with name or id: 견적서
+    at queryDataSource (about://React/Server/file:///home/dev/claude-workspace/invoice-web/.next/server/chunks/ssr/%5Broot-of-the-server%5D__626b5182._.js?51:437:22)
+    at <anonymous> (about://React/Server/file:///home/dev/claude-workspace/invoice-web/.next/server/chunks/ssr/%5Broot-of-the-server%5D__626b5182._.js?52:551:23)
+    at withRetry (about://React/Server/file:///home/dev/claude-workspace/invoice-web/.next/server/chunks/ssr/%5Broot-of-the-server%5D__626b5182._.js?53:320:20)
+    at <anonymous> (about://React/Server/file:///home/dev/claude-workspace/invoice-web/.next/server/chunks/ssr/%5Broot-of-the-server%5D__626b5182._.js?54:537:27)
+    at withRetry (about://React/Server/file:///home/dev/claude-workspace/invoice-web/.next/server/chunks/ssr/%5Broot-of-the-server%5D__626b5182._.js?53:320:20)
+    at InvoiceDetailPage (about://React/Server/file:///home/dev/claude-workspace/invoice-web/.next/server/chunks/ssr/%5Broot-of-the-server%5D__626b5182._.js?64:792:25)
+    at resolveErrorDev (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_5150ccfd._.js:4265:48)
+    at getOutlinedModel (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_5150ccfd._.js:3871:28)
+    at parseModelString (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_5150ccfd._.js:3990:50)
+    at Object.<anonymous> (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_5150ccfd._.js:4597:51)
+    at JSON.parse (<anonymous>)
+    at initializeModelChunk (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_5150ccfd._.js:3568:30)
+    at getOutlinedModel (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_5150ccfd._.js:3825:17)
+    at parseModelString (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_5150ccfd._.js:4044:50)
+    at Array.<anonymous> (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_5150ccfd._.js:4597:51)
+    at JSON.parse (<anonymous>)
+    at initializeModelChunk (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_5150ccfd._.js:3568:30)
+    at resolveConsoleEntry (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_5150ccfd._.js:4382:96)
+    at processFullStringRow (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_5150ccfd._.js:4532:17)
+    at processFullBinaryRow (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_5150ccfd._.js:4472:9)
+    at processBinaryChunk (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_5150ccfd._.js:4581:98)
+    at progress (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_5150ccfd._.js:4747:25) @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_b0daae9a._.js:2359

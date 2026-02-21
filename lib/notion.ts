@@ -301,16 +301,8 @@ export async function getInvoices(filters?: { status?: string }): Promise<Invoic
 
       if (statusLabel) {
         queryParams.filter = {
-          or: [
-            {
-              property: "상태",
-              select: { equals: statusLabel },
-            },
-            {
-              property: "Status",
-              select: { equals: statusLabel },
-            },
-          ],
+          property: "Status",
+          select: { equals: statusLabel },
         }
       }
     }
@@ -357,16 +349,8 @@ export async function getInvoiceItems(invoiceId: string): Promise<InvoiceItem[]>
     const pages = await queryDataSource({
       data_source_id: NOTION_DB.INVOICE_ITEMS,
       filter: {
-        or: [
-          {
-            property: "견적서",
-            relation: { contains: invoiceId },
-          },
-          {
-            property: "Invoice",
-            relation: { contains: invoiceId },
-          },
-        ],
+        property: "Invoice",
+        relation: { contains: invoiceId },
       },
     })
 
@@ -405,16 +389,8 @@ export async function getAccessTokenByValue(tokenValue: string): Promise<AccessT
     const pages = await queryDataSource({
       data_source_id: NOTION_DB.ACCESS_TOKENS,
       filter: {
-        or: [
-          {
-            property: "토큰",
-            rich_text: { equals: tokenValue },
-          },
-          {
-            property: "Token",
-            rich_text: { equals: tokenValue },
-          },
-        ],
+        property: "Token",
+        rich_text: { equals: tokenValue },
       },
       page_size: 1,
     })
@@ -436,16 +412,8 @@ export async function getAccessTokensByInvoiceId(invoiceId: string): Promise<Acc
     const pages = await queryDataSource({
       data_source_id: NOTION_DB.ACCESS_TOKENS,
       filter: {
-        or: [
-          {
-            property: "견적서",
-            relation: { contains: invoiceId },
-          },
-          {
-            property: "Invoice",
-            relation: { contains: invoiceId },
-          },
-        ],
+        property: "Invoice",
+        relation: { contains: invoiceId },
       },
       sorts: [{ timestamp: "created_time", direction: "descending" }],
     })

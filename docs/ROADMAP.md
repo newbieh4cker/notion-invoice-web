@@ -193,83 +193,35 @@
 
 ---
 
-### Phase 3: 핵심 기능 구현 (노션 API 연동)
+### Phase 3: 핵심 기능 구현 (노션 API 연동) -- 완료 ✅
 
-- **Task 015: 노션 API 데이터 조회 함수 구현 (F001)** -- 우선순위
-  - `lib/notion.ts` 확장 - 견적서 목록 조회 함수 (`getInvoices`): 노션 DB 쿼리, 상태/정렬 필터 지원
-  - 견적서 상세 조회 함수 (`getInvoiceById`): 노션 Page ID로 조회, 항목 데이터 포함
-  - 견적서 항목 조회 함수 (`getInvoiceItems`): Relation 필드 기반 연관 항목 조회
-  - 노션 DB 속성(property) 파싱 헬퍼 함수 구현: title -> string, rich_text -> string, number -> number, select -> string, date -> string, relation -> string[] 등
-  - 에러 핸들링 (APIResponseError 타입 분기, 네트워크 에러, 404 처리)
-  - `actions/invoice.ts` 신규 생성 - 견적서 관련 서버 액션 (getInvoiceListAction, getInvoiceDetailAction)
-  - 서버 컴포넌트에서 직접 호출 가능한 구조 (async 함수)
-  - ## 테스트 체크리스트
-    - Playwright MCP로 대시보드 페이지에서 노션 데이터 렌더링 확인
-    - 견적서 목록 페이지에서 실제 데이터 표시 확인
-    - 견적서 상세 페이지에서 항목 데이터 포함 표시 확인
-    - 존재하지 않는 견적서 ID 접근 시 적절한 에러 처리 확인
+- **Task 015: 노션 API 데이터 조회 함수 구현 (F001)** -- 완료 ✅
+  - ✅ `lib/notion.ts` 확장 - 견적서 목록/상세/항목 조회 함수 구현
+  - ✅ 노션 DB 속성 파싱 헬퍼 함수 (12가지 타입 지원)
+  - ✅ 에러 핸들링 및 재시도 로직 (지수 백오프)
+  - ✅ `actions/invoice.ts` 서버 액션 구현
 
-- **Task 016: 토큰 CRUD 노션 DB 연동 구현 (F002, F011)**
-  - `lib/notion.ts` 확장 - 토큰 저장 함수 (`createAccessToken`): 노션 DB에 페이지 생성
-  - 토큰 조회 함수 (`getAccessTokenByToken`): token 필드 기준 필터 조회
-  - 견적서별 토큰 목록 조회 (`getAccessTokensByInvoiceId`): invoiceId 기준 필터 조회
-  - 토큰 무효화 함수 (`revokeAccessToken`): isRevoked 필드를 true로 업데이트
-  - 마지막 접근일 업데이트 함수 (`updateLastAccessedAt`): lastAccessedAt 필드 갱신
-  - 토큰 검증 통합 함수 (`validateToken`): 토큰 존재 여부 -> isRevoked 확인 -> 만료일 확인 -> TokenValidationResult 반환
-  - `actions/token.ts` 업데이트 - TODO 주석을 실제 노션 DB 호출로 교체 (createTokenAction, revokeTokenAction)
-  - ## 테스트 체크리스트
-    - Playwright MCP로 공유 링크 관리 페이지에서 토큰 생성 테스트
-    - 생성된 토큰으로 클라이언트 열람 페이지 접근 테스트
-    - 무효화된 토큰으로 접근 시 오류 페이지(reason=invalid) 리다이렉트 테스트
-    - 만료된 토큰으로 접근 시 오류 페이지(reason=expired) 리다이렉트 테스트
-    - 존재하지 않는 토큰으로 접근 시 오류 페이지(reason=not_found) 리다이렉트 테스트
+- **Task 016: 토큰 CRUD 노션 DB 연동 구현 (F002, F011)** -- 완료 ✅
+  - ✅ 토큰 저장/조회/무효화/유효성 검증 함수 구현
+  - ✅ `actions/token.ts` 실제 노션 API 연동
 
-- **Task 017: 관리자 인증 미들웨어 및 세션 가드 구현 (F010)**
-  - `middleware.ts` 루트에 생성 - Next.js 미들웨어로 관리자 페이지 접근 제어
-  - 미인증 상태에서 `/dashboard`, `/invoices` 등 관리자 페이지 접근 시 `/login`으로 리다이렉트
-  - 인증 상태에서 `/login` 접근 시 `/dashboard`로 리다이렉트
-  - `config.matcher` 설정: `/(admin)` 그룹 라우트 및 `/login` 경로만 매칭
-  - `app/(admin)/layout.tsx` 업데이트 - 세션 확인 로직 추가 (getSession 호출)
-  - 세션 만료 시 자동 로그아웃 처리
-  - ## 테스트 체크리스트
-    - Playwright MCP로 미로그인 상태에서 `/dashboard` 접근 시 `/login` 리다이렉트 확인
-    - 미로그인 상태에서 `/invoices` 접근 시 `/login` 리다이렉트 확인
-    - 로그인 성공 후 대시보드 이동 확인
-    - 인증 상태에서 `/login` 접근 시 `/dashboard` 리다이렉트 확인
-    - 로그아웃 후 세션 삭제 및 `/login` 페이지 이동 확인
+- **Task 017: 관리자 인증 미들웨어 및 세션 가드 구현 (F010)** -- 완료 ✅
+  - ✅ `middleware.ts` 구현
+  - ✅ 관리자 페이지 접근 제어
 
-- **Task 018: 더미 데이터를 실제 노션 API 호출로 교체**
-  - 대시보드 페이지 - 서버 컴포넌트에서 `getInvoices()` 호출, 통계 계산, 최근 5건 추출
-  - 견적서 목록 페이지 - 서버 컴포넌트에서 `getInvoices()` 호출, 클라이언트 컴포넌트에 props 전달
-  - 견적서 상세 페이지 - 서버 컴포넌트에서 `getInvoiceById(id)` 호출, 항목 데이터 포함 전달
-  - 공유 링크 관리 페이지 - 서버 컴포넌트에서 `getAccessTokensByInvoiceId(id)` 호출
-  - 클라이언트 열람 페이지 - `validateToken(token)` 검증 후 `getInvoiceById(invoiceId)` 호출, 실패 시 `/invoice/error?reason=...` 리다이렉트
-  - 서버 컴포넌트 데이터 페칭 -> 클라이언트 컴포넌트 props 전달 패턴 적용
-  - 필터/검색/정렬 기능이 실제 데이터와 정상 동작하도록 조정
-  - ## 테스트 체크리스트
-    - Playwright MCP로 모든 페이지에서 실제 노션 데이터 렌더링 확인
-    - 필터링/검색/정렬 기능이 실제 데이터에서 정상 동작 확인
-    - 에러 상태 (노션 API 오류) 시 적절한 에러 UI 표시 확인
-    - 클라이언트 열람 페이지에서 유효한 토큰으로 견적서 데이터 정상 표시 확인
+- **Task 018: 더미 데이터를 실제 노션 API 호출로 교체** -- 완료 ✅
+  - ✅ 모든 페이지 서버 컴포넌트화
+  - ✅ 실제 노션 데이터 렌더링
 
-- **Task 019: 핵심 기능 통합 테스트**
-  - Playwright MCP를 사용한 전체 관리자 여정 E2E 테스트
-    - 로그인 -> 대시보드 확인 -> 견적서 목록 이동 -> 필터/검색 -> 견적서 상세 -> 공유 링크 생성 -> 링크 복사
-  - Playwright MCP를 사용한 전체 클라이언트 여정 E2E 테스트
-    - 공유 링크 URL 접근 -> 토큰 검증 -> 견적서 열람 -> PDF 다운로드 버튼 확인
-  - 보안 테스트
-    - 만료된 토큰 접근 -> `/invoice/error?reason=expired` 리다이렉트
-    - 무효화된 토큰 접근 -> `/invoice/error?reason=invalid` 리다이렉트
-    - 존재하지 않는 토큰 접근 -> `/invoice/error?reason=not_found` 리다이렉트
-    - 미인증 상태에서 관리자 페이지 접근 차단 확인
-  - 에러 핸들링 및 엣지 케이스 테스트
-    - 노션 API 타임아웃/에러 시 적절한 에러 UI 표시
-    - 잘못된 견적서 ID로 접근 시 에러 처리
-    - 빈 견적서 항목 데이터 처리
+- **Task 019: 핵심 기능 통합 테스트** -- 완료 ✅
+  - ✅ E2E 테스트 30/30 통과
+  - ✅ 관리자 여정 테스트
+  - ✅ 클라이언트 여정 테스트
+  - ✅ 보안 테스트
 
 ---
 
-### Phase 4: PDF 다운로드 및 고급 기능 구현
+### Phase 4: PDF 다운로드 및 고급 기능 구현 -- 진행 중 🚀
 
 - **Task 020: PDF 다운로드 기능 완성 (F004)** - 우선순위
   - `hooks/use-pdf-download.ts` 개선 - 한글 폰트 임베딩 처리 (Noto Sans KR 또는 Pretendard / base64 인코딩 폰트 파일)

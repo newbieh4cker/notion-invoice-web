@@ -16,6 +16,13 @@ export const metadata: Metadata = {
  */
 export default async function DashboardPage() {
   try {
+    // 환경변수 확인 (디버그)
+    console.log("=== 환경변수 확인 ===")
+    console.log("NOTION_API_KEY:", process.env.NOTION_API_KEY ? "설정됨" : "미설정")
+    console.log("NOTION_INVOICES_DB_ID:", process.env.NOTION_INVOICES_DB_ID)
+    console.log("NOTION_INVOICE_ITEMS_DB_ID:", process.env.NOTION_INVOICE_ITEMS_DB_ID)
+    console.log("NOTION_ACCESS_TOKENS_DB_ID:", process.env.NOTION_ACCESS_TOKENS_DB_ID)
+
     const invoices = await getInvoices()
 
     return (
@@ -38,7 +45,11 @@ export default async function DashboardPage() {
       </div>
     )
   } catch (error) {
-    console.error("대시보드 데이터 로딩 실패:", error)
+    // 상세 에러 로깅
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    console.error("대시보드 데이터 로딩 실패:", errorMessage)
+    console.error("에러 전체:", error)
+
     return (
       <div className="container mx-auto max-w-screen-2xl px-4 py-8">
         <div className="mb-8">
@@ -46,7 +57,7 @@ export default async function DashboardPage() {
         </div>
         <ErrorState
           title="데이터를 불러올 수 없습니다"
-          description="노션 API 연결에 문제가 발생했습니다. 환경변수 설정을 확인하거나 잠시 후 다시 시도해주세요."
+          description={`노션 API 연결에 문제가 발생했습니다. 에러: ${errorMessage}`}
         />
       </div>
     )

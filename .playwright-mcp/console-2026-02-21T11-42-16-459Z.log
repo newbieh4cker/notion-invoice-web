@@ -1,0 +1,22 @@
+[    6086ms] [WARNING] %c%s%c @notionhq/client warn: background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   request fail {code: object_not_found, message: Could not find database with ID: 30ef4c03-1e3c-80f…s and databases are shared with your integration., requestId: 811d1874-fabc-481c-a05d-e94be1f1fc5c} @ about://React/Server/file:///home/dev/claude-workspace/invoice-web/.next/server/chunks/ssr/%5Broot-of-the-server%5D__0163f69a._.js?18:677
+[    6087ms] [ERROR] %c%s%c 대시보드 데이터 로딩 실패: background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   APIResponseError: Could not find database with ID: 30ef4c03-1e3c-80f7-a502-ce0e349b611b. Make sure the relevant pages and databases are shared with your integration.
+    at queryDataSource (about://React/Server/file:///home/dev/claude-workspace/invoice-web/.next/server/chunks/ssr/%5Broot-of-the-server%5D__0163f69a._.js?18:678:22)
+    at <anonymous> (about://React/Server/file:///home/dev/claude-workspace/invoice-web/.next/server/chunks/ssr/%5Broot-of-the-server%5D__0163f69a._.js?19:764:23)
+    at withRetry (about://React/Server/file:///home/dev/claude-workspace/invoice-web/.next/server/chunks/ssr/%5Broot-of-the-server%5D__0163f69a._.js?20:561:20)
+    at DashboardPage (about://React/Server/file:///home/dev/claude-workspace/invoice-web/.next/server/chunks/ssr/%5Broot-of-the-server%5D__0163f69a._.js?21:1020:26)
+    at resolveErrorDev (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_5150ccfd._.js:4265:48)
+    at getOutlinedModel (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_5150ccfd._.js:3871:28)
+    at parseModelString (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_5150ccfd._.js:3990:50)
+    at Object.<anonymous> (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_5150ccfd._.js:4597:51)
+    at JSON.parse (<anonymous>)
+    at initializeModelChunk (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_5150ccfd._.js:3568:30)
+    at getOutlinedModel (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_5150ccfd._.js:3825:17)
+    at parseModelString (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_5150ccfd._.js:4044:50)
+    at Array.<anonymous> (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_5150ccfd._.js:4597:51)
+    at JSON.parse (<anonymous>)
+    at initializeModelChunk (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_5150ccfd._.js:3568:30)
+    at resolveConsoleEntry (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_5150ccfd._.js:4382:96)
+    at processFullStringRow (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_5150ccfd._.js:4532:17)
+    at processFullBinaryRow (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_5150ccfd._.js:4472:9)
+    at processBinaryChunk (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_5150ccfd._.js:4581:98)
+    at progress (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_5150ccfd._.js:4747:25) @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_b0daae9a._.js:2359

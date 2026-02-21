@@ -201,6 +201,49 @@ npx tsc --noEmit     # TypeScript 타입 체크
 npx shadcn@latest add [component-name]
 ```
 
+## E2E 테스트
+
+### Playwright E2E 테스트
+
+```bash
+# 전체 E2E 테스트 실행
+npx playwright test test/e2e/
+
+# 특정 테스트 파일 실행
+npx playwright test test/e2e/admin-journey.spec.ts     # 관리자 여정 (10개 테스트)
+npx playwright test test/e2e/client-journey.spec.ts    # 클라이언트 여정 (10개 테스트)
+npx playwright test test/e2e/security.spec.ts          # 보안 테스트 (10개 테스트)
+
+# 특정 테스트만 실행
+npx playwright test -g "로그인 페이지"
+
+# UI 모드 (시각적 디버깅)
+npx playwright test --ui
+
+# 디버그 모드
+npx playwright test --debug
+
+# HTML 리포트 보기
+npx playwright show-report
+```
+
+### 테스트 스위트 설명
+
+- **admin-journey.spec.ts**: 관리자 로그인부터 로그아웃까지의 전체 플로우 (10개 테스트)
+  - 로그인, 대시보드, 견적서 목록, 네비게이션, 테마 토글, 로그아웃
+
+- **client-journey.spec.ts**: 클라이언트가 토큰을 통해 견적서에 접근하는 플로우 (10개 테스트)
+  - 토큰 검증, 에러 페이지, 라우팅, 접근 제어
+
+- **security.spec.ts**: 보안 및 인증 관련 테스트 (10개 테스트)
+  - 미들웨어 보안, CSRF, XSS, 세션, 환경변수 노출, HTTP 헤더
+
+### 테스트 결과
+
+- **총 30개 테스트, 100% 통과**
+- **전체 실행 시간**: ~23.5초
+- 자세한 내용은 [TEST_REPORT.md](./TEST_REPORT.md) 참조
+
 ## 개발 상태
 
 - [x] 프로젝트 기본 구조 설정

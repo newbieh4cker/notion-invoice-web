@@ -7,7 +7,7 @@
  * 인쇄 친화적 레이아웃 지원
  */
 
-import { FileText, Calendar, CalendarClock, Building2, User, Mail, Phone } from "lucide-react"
+import { FileText, Calendar, CalendarClock, Building2, User, Mail, Phone, Printer, AlertTriangle } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   Table,
@@ -18,6 +18,8 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Separator } from "@/components/ui/separator"
+import { Button } from "@/components/ui/button"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 import { PdfDownloadButton } from "@/components/invoice/pdf-download-button"
 import { StatusBadge } from "@/components/invoice/status-badge"
 import { formatCurrency, formatDate } from "@/lib/format"
@@ -40,8 +42,39 @@ export function InvoiceView({ invoice }: InvoiceViewProps) {
   const taxAmount = Math.round(subtotal * 0.1)
   const totalWithTax = subtotal + taxAmount
 
+  // 유효기간 확인
+  const isExpired = invoice.expiryDate && new Date(invoice.expiryDate) < new Date()
+  const daysUntilExpiry = invoice.expiryDate
+    ? Math.ceil((new Date(invoice.expiryDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
+    : null
+
+  // 인쇄 함수
+  const handlePrint = () => {
+    window.print()
+  }
+
   return (
     <div className="space-y-6">
+      {/* 유효기간 만료 알림 배너 */}
+      {isExpired && (
+        <Alert className="border-yellow-500/50 bg-yellow-50 dark:bg-yellow-950/20 print:hidden">
+          <AlertTriangle className="h-4 w-4 text-yellow-600 dark:text-yellow-500" />
+          <AlertDescription className="text-yellow-800 dark:text-yellow-200">
+            이 견적서의 유효기간이 만료되었습니다. 새로운 견적서를 요청해주세요.
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {/* 유효기간 만료 예정 알림 배너 */}
+      {!isExpired && daysUntilExpiry !== null && daysUntilExpiry <= 7 && daysUntilExpiry > 0 && (
+        <Alert className="border-orange-500/50 bg-orange-50 dark:bg-orange-950/20 print:hidden">
+          <AlertTriangle className="h-4 w-4 text-orange-600 dark:text-orange-500" />
+          <AlertDescription className="text-orange-800 dark:text-orange-200">
+            이 견적서는 {daysUntilExpiry}일 후 유효기간이 만료됩니다.
+          </AlertDescription>
+        </Alert>
+      )}
+
       {/* PDF 출력 영역 */}
       <div
         id={PDF_ELEMENT_ID}
@@ -204,8 +237,20 @@ export function InvoiceView({ invoice }: InvoiceViewProps) {
         </Card>
       </div>
 
-      {/* PDF 다운로드 버튼 (인쇄 시 숨김) */}
-      <div className="flex justify-center print:hidden">
+      {/* 액션 버튼 (인쇄 시 숨김) */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-center print:hidden">
+        {/* 인쇄 버튼 */}
+        <Button
+          onClick={handlePrint}
+          variant="outline"
+          size="lg"
+          className="w-full sm:w-auto"
+        >
+          <Printer className="mr-2 h-4 w-4" aria-hidden="true" />
+          인쇄
+        </Button>
+
+        {/* PDF 다운로드 버튼 */}
         <PdfDownloadButton
           targetElementId={PDF_ELEMENT_ID}
           filename={pdfFilename}

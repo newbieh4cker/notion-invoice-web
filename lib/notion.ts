@@ -556,3 +556,30 @@ export async function validateAccessToken(tokenValue: string): Promise<{
     token: tokenData,
   }
 }
+
+/**
+ * 견적서 상태 업데이트 (F003)
+ * 클라이언트가 견적서를 최초 열람할 때 "sent" → "viewed"로 상태 변경
+ */
+export async function updateInvoiceStatus(invoiceId: string, newStatus: InvoiceStatus): Promise<void> {
+  try {
+    // 상태를 한글 라벨로 변환
+    const statusLabel = Object.entries(STATUS_MAP).find(
+      ([, v]) => v === newStatus
+    )?.[0] ?? "초안"
+
+    await withRetry(async () => {
+      await notion.pages.update({
+        page_id: invoiceId,
+        properties: {
+          "상태": {
+            select: { name: statusLabel },
+          },
+        },
+      })
+    })
+  } catch (error) {
+    // 상태 업데이트 실패는 무시 (핵심 기능이 아님)
+    console.warn(`견적서 상태 업데이트 실패: ${invoiceId}`, error)
+  }
+}

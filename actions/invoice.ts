@@ -5,8 +5,8 @@
  * 노션 API를 통한 견적서 CRUD 작업
  */
 
-import { getInvoices, getInvoiceById, getInvoiceItems } from "@/lib/notion"
-import type { Invoice, InvoiceItem } from "@/types/invoice"
+import { getInvoices, getInvoiceById, getInvoiceItems, updateInvoiceStatus } from "@/lib/notion"
+import type { Invoice, InvoiceItem, InvoiceStatus } from "@/types/invoice"
 
 /** 서버 액션 응답 타입 */
 interface ActionResult<T> {
@@ -66,6 +66,30 @@ export async function getInvoiceDetailAction(
     return {
       success: false,
       error: "견적서 정보를 불러오는 데 실패했습니다. 잠시 후 다시 시도해주세요.",
+    }
+  }
+}
+
+/**
+ * 견적서 상태 업데이트 서버 액션 (F003)
+ * 클라이언트가 견적서를 열람할 때 상태를 변경 (예: sent → viewed)
+ */
+export async function updateInvoiceStatusAction(
+  invoiceId: string,
+  newStatus: InvoiceStatus
+): Promise<ActionResult<void>> {
+  if (!invoiceId) {
+    return { success: false, error: "견적서 ID가 필요합니다" }
+  }
+
+  try {
+    await updateInvoiceStatus(invoiceId, newStatus)
+    return { success: true }
+  } catch (error: unknown) {
+    console.error("견적서 상태 업데이트 실패:", error)
+    return {
+      success: false,
+      error: "견적서 상태 업데이트에 실패했습니다.",
     }
   }
 }

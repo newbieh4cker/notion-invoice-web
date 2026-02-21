@@ -1,7 +1,7 @@
 import { Metadata } from "next"
 import { InvoiceView } from "@/components/invoice/invoice-view"
 import { ErrorState } from "@/components/common/error-state"
-import { validateAccessToken, getInvoiceById } from "@/lib/notion"
+import { validateAccessToken, getInvoiceById, updateInvoiceStatus } from "@/lib/notion"
 
 interface ClientInvoicePageProps {
   params: Promise<{ token: string }>
@@ -71,6 +71,13 @@ export default async function ClientInvoicePage({
         </div>
       </div>
     )
+  }
+
+  // 견적서 상태 자동 변경: sent → viewed (백그라운드, 에러 무시)
+  if (invoice.status === "sent") {
+    updateInvoiceStatus(invoice.id, "viewed").catch(() => {
+      console.warn("견적서 상태 업데이트 실패 (자동 무시)")
+    })
   }
 
   return (

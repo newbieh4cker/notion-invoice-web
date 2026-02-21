@@ -120,3 +120,49 @@
     @apply bg-background text-foreground;
   }
 }
+
+@media print {
+  * {
+    background: transparent !important;
+  }
+
+  body {
+    color: black;
+    background: white;
+  }
+
+  /* 인쇄 시 Navbar, Footer 등 UI 요소 숨기기 */
+  nav,
+  footer,
+  button:not([class*="print"]),
+  .print\:hidden,
+  [class*="print:hidden"] {
+    display: none !important;
+  }
+
+  /* 인쇄 시 본문만 표시 */
+  main {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* 페이지 여백 설정 */
+  @page {
+    margin: 1cm;
+  }
+
+  /* 테이블 페이지 나누기 방지 */
+  table {
+    page-break-inside: avoid;
+  }
+
+  tr {
+    page-break-inside: avoid;
+  }
+
+  /* 카드 페이지 나누기 방지 */
+  [class*="Card"] {
+    page-break-inside: avoid;
+  }
+}

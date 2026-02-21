@@ -220,9 +220,13 @@ const STATUS_MAP: Record<string, InvoiceStatus> = {
   "지불": "paid",
   // 영문 키도 지원 (노션 DB 설정에 따라)
   "draft": "draft",
+  "Draft": "draft",
   "sent": "sent",
+  "Sent": "sent",
   "viewed": "viewed",
+  "Viewed": "viewed",
   "paid": "paid",
+  "Paid": "paid",
 }
 
 /**
@@ -231,19 +235,21 @@ const STATUS_MAP: Record<string, InvoiceStatus> = {
 function pageToInvoice(page: PageObjectResponse, items: InvoiceItem[] = []): Invoice {
   const props = page.properties
 
-  const statusRaw = getStringProperty(props, "상태") || getStringProperty(props, "Status")
+  // Status 속성: 한글/영문 모두 지원, 영문(Status) 먼저 확인
+  const statusRaw = getStringProperty(props, "Status") || getStringProperty(props, "상태")
   const status = STATUS_MAP[statusRaw] ?? "draft"
 
   return {
     id: page.id,
-    invoiceNumber: getStringProperty(props, "견적서번호") || getStringProperty(props, "InvoiceNumber") || getStringProperty(props, "InvoiceNum"),
-    clientName: getStringProperty(props, "거래처명") || getStringProperty(props, "ClientName"),
-    clientEmail: getStringProperty(props, "이메일") || getStringProperty(props, "ClientEmail"),
-    clientPhone: getStringProperty(props, "전화번호") || getStringProperty(props, "ClientPhone"),
-    issueDate: getStringProperty(props, "발행일") || getStringProperty(props, "IssueDate"),
-    expiryDate: getStringProperty(props, "유효기간") || getStringProperty(props, "ExpiryDate"),
-    companyName: getStringProperty(props, "발행자") || getStringProperty(props, "CompanyName"),
-    totalAmount: getNumberProperty(props, "총금액") || getNumberProperty(props, "TotalAmount"),
+    // Invoice 번호: InvoiceNum (가장 먼저), 그 다음 InvoiceNumber, 견적서번호
+    invoiceNumber: getStringProperty(props, "InvoiceNum") || getStringProperty(props, "InvoiceNumber") || getStringProperty(props, "견적서번호"),
+    clientName: getStringProperty(props, "ClientName") || getStringProperty(props, "거래처명"),
+    clientEmail: getStringProperty(props, "ClientEmail") || getStringProperty(props, "이메일"),
+    clientPhone: getStringProperty(props, "ClientPhone") || getStringProperty(props, "전화번호"),
+    issueDate: getStringProperty(props, "IssueDate") || getStringProperty(props, "발행일"),
+    expiryDate: getStringProperty(props, "ExpiryDate") || getStringProperty(props, "유효기간"),
+    companyName: getStringProperty(props, "CompanyName") || getStringProperty(props, "발행자"),
+    totalAmount: getNumberProperty(props, "TotalAmount") || getNumberProperty(props, "총금액"),
     status,
     items,
     createdAt: page.created_time,
@@ -257,16 +263,20 @@ function pageToInvoice(page: PageObjectResponse, items: InvoiceItem[] = []): Inv
 function pageToInvoiceItem(page: PageObjectResponse): InvoiceItem {
   const props = page.properties
 
-  // relation에서 견적서 ID 추출
-  const invoiceRelation = getRelationProperty(props, "견적서") || getRelationProperty(props, "Invoice")
+  // relation에서 견적서/Invoice ID 추출 (Invoice 먼저 확인)
+  const invoiceRelation = getRelationProperty(props, "Invoice") || getRelationProperty(props, "견적서")
   const invoiceId = invoiceRelation[0] ?? ""
 
   return {
     id: page.id,
-    description: getStringProperty(props, "항목명") || getStringProperty(props, "Description"),
-    quantity: getNumberProperty(props, "수량") || getNumberProperty(props, "Quantity"),
-    unitPrice: getNumberProperty(props, "단가") || getNumberProperty(props, "UnitPrice"),
-    totalPrice: getNumberProperty(props, "소계") || getNumberProperty(props, "TotalPrice"),
+    // 항목명: ItemName (먼저), 그 다음 Description, 항목명
+    description: getStringProperty(props, "ItemName") || getStringProperty(props, "Description") || getStringProperty(props, "항목명"),
+    // 수량: Quantity 먼저
+    quantity: getNumberProperty(props, "Quantity") || getNumberProperty(props, "수량"),
+    // 단가: UnitPrice 먼저
+    unitPrice: getNumberProperty(props, "UnitPrice") || getNumberProperty(props, "단가"),
+    // 소계: Subtotal 먼저
+    totalPrice: getNumberProperty(props, "Subtotal") || getNumberProperty(props, "소계") || getNumberProperty(props, "TotalPrice"),
     invoiceId,
   }
 }

@@ -3,12 +3,12 @@
 /**
  * 견적서 상태 필터 컴포넌트
  * Tabs 기반 상태별 필터링 (전체/초안/발송/열람/지불)
- * Zustand 스토어와 연동하여 필터 상태 관리
+ * invoices를 props로 받아 카운트 계산 (Zustand 의존 제거로 SSR 데이터 즉시 반영)
  */
 
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useInvoiceStore } from "@/stores/invoice-store"
-import type { InvoiceStatus } from "@/types/invoice"
+import type { Invoice, InvoiceStatus } from "@/types/invoice"
 
 /** 탭 구성 타입 */
 interface TabConfig {
@@ -26,13 +26,18 @@ const TAB_CONFIG: TabConfig[] = [
   { value: "paid", label: "지불", status: "paid" },
 ]
 
-export function InvoiceFilters() {
-  const { filter, setFilter, invoices } = useInvoiceStore()
+interface InvoiceFiltersProps {
+  /** 카운트 계산에 사용할 견적서 목록 (서버에서 직접 전달) */
+  invoices: Invoice[]
+}
+
+export function InvoiceFilters({ invoices }: InvoiceFiltersProps) {
+  const { filter, setFilter } = useInvoiceStore()
 
   // 현재 활성 탭 값 결정
   const activeTab = filter.status ?? "all"
 
-  // 각 상태별 견적서 수 계산
+  // 각 상태별 견적서 수 계산 (서버 데이터 기준)
   const countByStatus = (status: InvoiceStatus | null) => {
     if (status === null) return invoices.length
     return invoices.filter((inv) => inv.status === status).length

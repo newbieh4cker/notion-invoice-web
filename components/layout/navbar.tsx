@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/sheet"
 import { Separator } from "@/components/ui/separator"
 import { ThemeToggle } from "./theme-toggle"
+import { Breadcrumb } from "./breadcrumb"
 import { logoutAction } from "@/actions/auth"
 import { cn } from "@/lib/utils"
 
@@ -65,7 +66,9 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto flex h-14 max-w-screen-2xl items-center px-4">
+      <div className="container mx-auto flex flex-col max-w-screen-2xl">
+        {/* 메인 네비게이션 바 */}
+        <div className="flex h-14 items-center px-4">
         {/* 로고 영역 */}
         <div className="mr-4 flex items-center">
           <Link
@@ -190,6 +193,12 @@ export function Navbar() {
               </Button>
             </SheetContent>
           </Sheet>
+        </div>
+        </div>
+
+        {/* 브레드크럼 네비게이션 */}
+        <div className="border-t border-border/40 bg-muted/30">
+          <Breadcrumb />
         </div>
       </div>
     </header>

@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation"
 import { Navbar } from "@/components/layout/navbar"
 import { Footer } from "@/components/layout/footer"
+import { Sidebar } from "@/components/layout/sidebar"
 import { getSession } from "@/lib/session"
 
 /**
@@ -23,7 +24,10 @@ export default async function AdminLayout({
   return (
     <div className="flex min-h-screen flex-col">
       <Navbar />
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 relative">
+        <Sidebar />
+        {children}
+      </main>
       <Footer />
     </div>
   )

@@ -3,9 +3,11 @@
 /**
  * 견적서 목록 테이블 컴포넌트
  * 필터/검색/정렬이 적용된 견적서 목록 표시
- * Zustand 스토어의 getFilteredInvoices() 활용
+ * invoices와 UI 상태를 props로 받아 useMemo로 필터링/정렬 처리
+ * (SSR 데이터를 useEffect 없이 즉시 렌더링)
  */
 
+import { useMemo } from "react"
 import { useRouter } from "next/navigation"
 import {
   Table,
@@ -18,16 +20,94 @@ import {
 import { Button } from "@/components/ui/button"
 import { StatusBadge } from "@/components/invoice/status-badge"
 import { EmptyState } from "@/components/common/empty-state"
-import { useInvoiceStore } from "@/stores/invoice-store"
 import { formatCurrency, formatDate } from "@/lib/format"
 import { FileSearch, ExternalLink } from "lucide-react"
+import type { Invoice } from "@/types/invoice"
+import type { InvoiceFilter, InvoiceSortBy, SortOrder } from "@/stores/invoice-store"
 
-export function InvoiceTable() {
+interface InvoiceTableProps {
+  /** 서버에서 전달된 전체 견적서 목록 */
+  invoices: Invoice[]
+  /** 현재 적용된 필터 상태 */
+  filter: InvoiceFilter
+  /** 검색어 */
+  searchTerm: string
+  /** 정렬 기준 */
+  sortBy: InvoiceSortBy
+  /** 정렬 방향 */
+  sortOrder: SortOrder
+}
+
+export function InvoiceTable({
+  invoices,
+  filter,
+  searchTerm,
+  sortBy,
+  sortOrder,
+}: InvoiceTableProps) {
   const router = useRouter()
-  const getFilteredInvoices = useInvoiceStore((s) => s.getFilteredInvoices)
 
-  // 필터/검색/정렬 적용된 견적서 목록
-  const filteredInvoices = getFilteredInvoices()
+  // 필터/검색/정렬 적용된 견적서 목록 (메모이제이션으로 불필요한 재계산 방지)
+  const filteredInvoices = useMemo(() => {
+    let result = [...invoices]
+
+    // 상태 필터 적용
+    if (filter.status !== null) {
+      result = result.filter((inv) => inv.status === filter.status)
+    }
+
+    // 날짜 범위 필터 적용
+    if (filter.dateRange.from) {
+      const from = new Date(filter.dateRange.from)
+      result = result.filter((inv) => inv.issueDate && new Date(inv.issueDate) >= from)
+    }
+    if (filter.dateRange.to) {
+      const to = new Date(filter.dateRange.to)
+      to.setHours(23, 59, 59, 999)
+      result = result.filter((inv) => inv.issueDate && new Date(inv.issueDate) <= to)
+    }
+
+    // 검색어 필터 적용 (거래처명, 견적서 번호, 이메일)
+    if (searchTerm.trim()) {
+      const term = searchTerm.trim().toLowerCase()
+      result = result.filter(
+        (inv) =>
+          inv.clientName?.toLowerCase().includes(term) ||
+          inv.invoiceNumber?.toLowerCase().includes(term) ||
+          inv.clientEmail?.toLowerCase().includes(term)
+      )
+    }
+
+    // 정렬 적용
+    result.sort((a, b) => {
+      let comparison = 0
+      switch (sortBy) {
+        case "createdAt":
+          // createdAt이 없으면 issueDate로 폴백
+          comparison =
+            new Date(a.createdAt || a.issueDate || "").getTime() -
+            new Date(b.createdAt || b.issueDate || "").getTime()
+          break
+        case "updatedAt":
+          comparison =
+            new Date(a.updatedAt || a.issueDate || "").getTime() -
+            new Date(b.updatedAt || b.issueDate || "").getTime()
+          break
+        case "totalAmount":
+          comparison = (a.totalAmount || 0) - (b.totalAmount || 0)
+          break
+        case "clientName":
+          comparison = (a.clientName || "").localeCompare(b.clientName || "", "ko")
+          break
+        case "invoiceNumber":
+          comparison = (a.invoiceNumber || "").localeCompare(b.invoiceNumber || "")
+          break
+      }
+      return sortOrder === "asc" ? comparison : -comparison
+    })
+
+    return result
+  }, [invoices, filter, searchTerm, sortBy, sortOrder])
 
   // 데이터가 없을 때 EmptyState 표시
   if (filteredInvoices.length === 0) {

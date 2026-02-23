@@ -20,12 +20,20 @@ export interface DateRange {
   to: string | null
 }
 
+/** 금액 범위 필터 */
+export interface AmountRange {
+  min: number | null
+  max: number | null
+}
+
 /** 필터 상태 */
 export interface InvoiceFilter {
   /** 상태 필터 (null = 전체) */
   status: InvoiceStatus | null
   /** 발행일 범위 */
   dateRange: DateRange
+  /** 금액 범위 */
+  amountRange: AmountRange
 }
 
 /** 견적서 스토어 상태 */
@@ -80,6 +88,10 @@ const initialFilter: InvoiceFilter = {
   dateRange: {
     from: null,
     to: null,
+  },
+  amountRange: {
+    min: null,
+    max: null,
   },
 }
 
@@ -207,6 +219,14 @@ export const useInvoiceStore = create<InvoiceState & InvoiceActions>()(
           // 종료일은 해당 날짜 끝까지 포함
           to.setHours(23, 59, 59, 999)
           result = result.filter((inv) => new Date(inv.issueDate) <= to)
+        }
+
+        // 금액 범위 필터 적용
+        if (filter.amountRange.min !== null) {
+          result = result.filter((inv) => inv.totalAmount >= filter.amountRange.min!)
+        }
+        if (filter.amountRange.max !== null) {
+          result = result.filter((inv) => inv.totalAmount <= filter.amountRange.max!)
         }
 
         // 검색어 필터 적용 (거래처명, 견적서 번호, 이메일)

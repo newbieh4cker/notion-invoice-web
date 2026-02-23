@@ -1,14 +1,19 @@
 "use client"
 
 /**
- * 견적서 상태 필터 컴포넌트
- * Tabs 기반 상태별 필터링 (전체/초안/발송/열람/지불)
- * invoices를 props로 받아 카운트 계산 (Zustand 의존 제거로 SSR 데이터 즉시 반영)
+ * 견적서 필터 컴포넌트
+ * - Tabs 기반 상태별 필터링 (전체/초안/발송/열람/지불)
+ * - 날짜 범위 필터
+ * - 금액 범위 필터
+ * - 활성 필터 태그 표시 및 개별 제거
  */
 
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useInvoiceStore } from "@/stores/invoice-store"
 import type { Invoice, InvoiceStatus } from "@/types/invoice"
+import { DateRangeFilter } from "./date-range-filter"
+import { AmountRangeFilter } from "./amount-range-filter"
+import { ActiveFilters } from "./active-filters"
 
 /** 탭 구성 타입 */
 interface TabConfig {
@@ -52,25 +57,37 @@ export function InvoiceFilters({ invoices }: InvoiceFiltersProps) {
   }
 
   return (
-    <Tabs value={activeTab} onValueChange={handleTabChange}>
-      <TabsList className="h-auto flex-wrap gap-1">
-        {TAB_CONFIG.map((tab) => {
-          const count = countByStatus(tab.status)
-          return (
-            <TabsTrigger
-              key={tab.value}
-              value={tab.value}
-              className="gap-1.5"
-            >
-              {tab.label}
-              {/* 상태별 견적서 수 배지 */}
-              <span className="ml-1 rounded-full bg-muted px-1.5 py-0.5 text-xs font-medium tabular-nums">
-                {count}
-              </span>
-            </TabsTrigger>
-          )
-        })}
-      </TabsList>
-    </Tabs>
+    <div className="space-y-4">
+      {/* 상태 필터 탭 */}
+      <Tabs value={activeTab} onValueChange={handleTabChange}>
+        <TabsList className="h-auto flex-wrap gap-1">
+          {TAB_CONFIG.map((tab) => {
+            const count = countByStatus(tab.status)
+            return (
+              <TabsTrigger
+                key={tab.value}
+                value={tab.value}
+                className="gap-1.5"
+              >
+                {tab.label}
+                {/* 상태별 견적서 수 배지 */}
+                <span className="ml-1 rounded-full bg-muted px-1.5 py-0.5 text-xs font-medium tabular-nums">
+                  {count}
+                </span>
+              </TabsTrigger>
+            )
+          })}
+        </TabsList>
+      </Tabs>
+
+      {/* 추가 필터 버튼 영역 */}
+      <div className="flex flex-wrap items-center gap-2">
+        <DateRangeFilter />
+        <AmountRangeFilter />
+      </div>
+
+      {/* 활성 필터 태그 */}
+      <ActiveFilters />
+    </div>
   )
 }

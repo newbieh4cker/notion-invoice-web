@@ -67,6 +67,14 @@ export function InvoiceTable({
       result = result.filter((inv) => inv.issueDate && new Date(inv.issueDate) <= to)
     }
 
+    // 금액 범위 필터 적용
+    if (filter.amountRange.min !== null) {
+      result = result.filter((inv) => (inv.totalAmount || 0) >= filter.amountRange.min!)
+    }
+    if (filter.amountRange.max !== null) {
+      result = result.filter((inv) => (inv.totalAmount || 0) <= filter.amountRange.max!)
+    }
+
     // 검색어 필터 적용 (거래처명, 견적서 번호, 이메일)
     if (searchTerm.trim()) {
       const term = searchTerm.trim().toLowerCase()
@@ -139,7 +147,7 @@ export function InvoiceTable({
           {filteredInvoices.map((invoice) => (
             <TableRow
               key={invoice.id}
-              className="cursor-pointer hover:bg-muted/50 transition-colors"
+              className="cursor-pointer hover:bg-muted/50 hover:shadow-sm transition-all duration-200 group"
               onClick={() => router.push(`/invoices/${invoice.id}`)}
               role="button"
               aria-label={`${invoice.invoiceNumber} 상세 보기`}

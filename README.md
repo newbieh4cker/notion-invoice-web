@@ -111,39 +111,37 @@ npm run start
 
 ### 견적서 DB (Invoices)
 
-| 필드 | 타입 | 설명 |
+| 필드 (영문/한글) | 타입 | 설명 |
 |------|------|------|
-| 견적서 번호 | Title | 예: INV-2026-001 |
-| 클라이언트명 | Text | |
-| 클라이언트 이메일 | Email | |
-| 클라이언트 전화 | Phone | |
-| 발행일 | Date | |
-| 유효기간 | Date | |
-| 회사명 | Text | 발행 회사명 |
-| 합계 금액 | Number | |
-| 상태 | Select | draft, sent, viewed, paid |
-| 항목 | Relation | 견적서 항목 DB 연결 |
+| InvoiceNum / 견적서 번호 | Title | 예: INV-2026-001 |
+| ClientName / 클라이언트명 | Text | |
+| ClientEmail / 클라이언트 이메일 | Email | |
+| IssueDate / 발행일 | Date | |
+| ExpiryDate / 유효기간 | Date | |
+| TotalAmount / 합계 금액 | Number | |
+| Status / 상태 | Select | draft, sent, viewed, paid |
+| ItemsRelation / 항목 | Relation | 견적서 항목 DB 연결 |
 
 ### 견적서 항목 DB (Invoice Items)
 
-| 필드 | 타입 | 설명 |
+| 필드 (영문/한글) | 타입 | 설명 |
 |------|------|------|
-| 상품/서비스명 | Title | |
-| 수량 | Number | |
-| 단가 | Number | |
-| 소계 | Formula | 수량 x 단가 |
-| 견적서 | Relation | 견적서 DB 연결 |
+| ItemName / 상품/서비스명 | Title | |
+| Quantity / 수량 | Number | |
+| UnitPrice / 단가 | Number | |
+| Subtotal / 소계 | Formula | 수량 x 단가 |
+| Invoice / 견적서 | Relation | 견적서 DB 연결 |
 
 ### 공유 토큰 DB (Access Tokens)
 
-| 필드 | 타입 | 설명 |
+| 필드 (영문/한글) | 타입 | 설명 |
 |------|------|------|
-| 토큰 | Title | 고유 토큰 값 |
-| 견적서 ID | Text | 노션 페이지 ID |
-| 클라이언트 이메일 | Email | |
-| 만료일 | Date | |
-| 무효화 여부 | Checkbox | |
-| 마지막 접근일 | Date | |
+| Token / 토큰 | Title | 고유 토큰 값 |
+| Invoice / 견적서 | Relation | 견적서 DB 연결 |
+| ClientEmail / 클라이언트 이메일 | Email | |
+| Status / 상태 | Select | active, expired, revoked |
+| ExpiresAt / 만료일 | Date | |
+| LastAccessedAt / 마지막 접근일 | Date | |
 
 ## 프로젝트 구조
 
@@ -240,27 +238,112 @@ npx playwright show-report
 
 ### 테스트 결과
 
-- **총 30개 테스트, 100% 통과**
-- **전체 실행 시간**: ~23.5초
-- 자세한 내용은 [TEST_REPORT.md](./TEST_REPORT.md) 참조
+- **총 38개 테스트, 100% 통과** ✅
+- **실행 완료**: Phase 4/5 완료
+- 테스트 커버리지:
+  - 관리자 여정 (로그인, 대시보드, 견적서 관리, 공유 링크)
+  - 클라이언트 여정 (토큰 검증, 견적서 열람, PDF 다운로드)
+  - 보안 테스트 (CSRF, XSS, 세션, 환경변수)
+  - 에러 처리 (404, 500, 만료/무효 토큰)
 
 ## 개발 상태
 
+### Phase 1-4: 완료 ✅
 - [x] 프로젝트 기본 구조 설정
 - [x] 환경변수 템플릿
 - [x] 타입 정의 (Invoice, InvoiceItem, AccessToken)
-- [x] 서버 액션 스캐폴딩 (auth, token)
+- [x] 서버 액션 (auth, token, invoice)
 - [x] 커스텀 훅 (PDF 다운로드, 클립보드 복사)
-- [ ] 노션 API 연동 (견적서 조회)
-- [ ] 관리자 로그인 UI
-- [ ] 대시보드 컴포넌트
-- [ ] 견적서 목록 및 상세 컴포넌트
-- [ ] 공유 링크 관리 UI
-- [ ] 클라이언트 견적서 열람 UI
-- [ ] PDF 다운로드 (한글 폰트 지원)
-- [ ] 토큰 유효성 검증 미들웨어
+- [x] 노션 API 연동 (견적서/항목/토큰 조회)
+- [x] 관리자 로그인 UI
+- [x] 대시보드 컴포넌트 (통계, 최근 항목)
+- [x] 견적서 목록 및 상세 컴포넌트 (필터, 검색, 정렬)
+- [x] 공유 링크 관리 UI (토큰 생성/복사/무효화)
+- [x] 클라이언트 견적서 열람 UI
+- [x] PDF 다운로드 (한글 폰트 지원, html2canvas-pro)
+- [x] 토큰 유효성 검증 미들웨어
+
+### Phase 5: 진행 중 🚀
+- [x] 보안 강화 (HMAC 세션, CSRF, 환경변수 검증, 에러 바운더리)
+- [x] 성능 최적화 (API 캐싱, 페이지네이션, SEO 메타데이터)
+- [ ] 최종 테스트 및 배포 준비 (E2E, 반응형/접근성/다크모드 검증, Vercel 배포)
+
+## 배포
+
+### Vercel 배포
+
+이 프로젝트는 Vercel에서 완벽하게 지원됩니다.
+
+#### 1. Vercel에 배포
+
+```bash
+# Vercel CLI 설치 (선택사항)
+npm i -g vercel
+
+# 배포
+vercel
+```
+
+또는 [Vercel 대시보드](https://vercel.com)에서 GitHub 저장소를 연결하면 자동 배포됩니다.
+
+#### 2. 환경변수 설정
+
+Vercel 프로젝트 설정에서 다음 환경변수를 추가하세요:
+
+```env
+NOTION_API_KEY=secret_xxxxxx
+NOTION_DB_INVOICES=xxxxxx
+NOTION_DB_ITEMS=xxxxxx
+NOTION_DB_TOKENS=xxxxxx
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD=your-secure-password
+SESSION_SECRET=your-64-char-random-hex-key
+NEXT_PUBLIC_APP_URL=https://your-project.vercel.app
+```
+
+**주의**: 프로덕션 환경에서는 다음 사항을 확인하세요:
+- `SESSION_SECRET`은 64자 이상의 암호학적으로 안전한 값
+- `NEXT_PUBLIC_APP_URL`은 배포된 도메인과 일치
+- 모든 환경변수가 설정되었는지 확인
+
+#### 3. 배포 후 확인
+
+배포 완료 후 다음을 확인하세요:
+
+```
+1. 로그인 페이지: https://your-project.vercel.app/login
+   - 테스트 계정: admin@example.com / your-password
+
+2. 관리자 기능:
+   - 대시보드: /dashboard
+   - 견적서 목록: /invoices
+   - 공유 링크 생성
+
+3. 클라이언트 기능:
+   - 공유받은 토큰으로 /invoice/[token]에 접근
+   - PDF 다운로드 기능 확인
+```
+
+#### 4. 자동 배포 설정
+
+GitHub에 푸시하면 Vercel에서 자동으로 배포됩니다:
+
+```
+main 브랜치 → Vercel 프로덕션 배포 ✅
+PR 생성 → Vercel 미리보기 배포
+```
+
+### 로컬 프로덕션 테스트
+
+배포 전에 로컬에서 프로덕션 빌드를 테스트할 수 있습니다:
+
+```bash
+npm run build
+npm run start
+```
 
 ## 문서
 
 - [PRD 문서](./docs/PRD.md) - 상세 기능 요구사항
 - [개발 가이드](./CLAUDE.md) - 개발 지침
+- [개발 로드맵](./docs/ROADMAP.md) - Phase별 개발 일정
